@@ -231,6 +231,7 @@ async function initDatabase() {
       telegram TEXT DEFAULT '',
       source TEXT DEFAULT '',
       status TEXT DEFAULT 'new' CHECK(status IN ('new','in_progress','contacted','refused','ignored','processed')),
+      touch_count INTEGER DEFAULT 0,
       scout_id INTEGER DEFAULT NULL,
       assigned_at DATETIME DEFAULT NULL,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,

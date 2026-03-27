@@ -3,7 +3,7 @@ import { useAuth, hasRole } from '../contexts/AuthContext';
 import { api } from '../api/client';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { Database, Plus, Search, Phone, Upload, Users, Send, Check, X, ChevronRight, ArrowLeft } from 'lucide-react';
+import { Database, Plus, Search, Phone, Upload, Users, Send, Check, X, ChevronRight, ArrowLeft, Trash2, AlertCircle } from 'lucide-react';
 
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.06 } } };
 const fadeUp = { hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0, transition: { duration: 0.3 } } };
@@ -34,13 +34,14 @@ export default function Leads() {
 
 // ======================== OWNER VIEW ========================
 function OwnerLeads() {
-  const [tab, setTab] = useState<'pool' | 'upload' | 'all'>('pool');
+  const [tab, setTab] = useState<'pool' | 'touch1' | 'touch2' | 'touch3' | 'touch4' | 'trash' | 'upload' | 'all'>('pool');
   const [leads, setLeads] = useState<any[]>([]);
   const [search, setSearch] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ name: '', phone: '', telegram: '', source: '' });
   const [uploadText, setUploadText] = useState('');
   const [poolCount, setPoolCount] = useState(0);
+  const [touchStats, setTouchStats] = useState<any>({ touch_0: 0, touch_1: 0, touch_2: 0, touch_3: 0, touch_4: 0, trash: 0 });
 
   useEffect(() => { loadData(); }, [tab]);
 
@@ -48,11 +49,20 @@ function OwnerLeads() {
     try {
       const params = new URLSearchParams();
       if (tab === 'pool') params.set('pool', '1');
+      else if (tab === 'touch1') params.set('touch', '1');
+      else if (tab === 'touch2') params.set('touch', '2');
+      else if (tab === 'touch3') params.set('touch', '3');
+      else if (tab === 'touch4') params.set('touch', '4');
+      else if (tab === 'trash') params.set('touch', 'trash');
       if (search) params.set('search', search);
-      const data = await api.get<any[]>(`/leads?${params}`);
+      const [data, pc, ts] = await Promise.all([
+        api.get<any[]>(`/leads?${params}`),
+        api.get<any>('/leads/pool-count'),
+        api.get<any>('/leads/touch-stats'),
+      ]);
       setLeads(data);
-      const pc = await api.get<any>('/leads/pool-count');
       setPoolCount(pc.count);
+      setTouchStats(ts);
     } catch { /* ignore */ }
   }
 
@@ -79,6 +89,14 @@ function OwnerLeads() {
     } catch (err: any) { toast.error(err.message); }
   }
 
+  const touchColor = (n: number) => {
+    if (n === 0) return 'text-blue-400';
+    if (n === 1) return 'text-yellow-400';
+    if (n === 2) return 'text-orange-400';
+    if (n === 3) return 'text-red-400';
+    return 'text-red-500';
+  };
+
   return (
     <motion.div className="space-y-6" initial="hidden" animate="visible" variants={stagger}>
       <motion.div variants={fadeUp} className="flex items-center justify-between">
@@ -93,16 +111,21 @@ function OwnerLeads() {
       </motion.div>
 
       {/* Tabs */}
-      <div className="flex gap-2 border-b border-dark-700 pb-2">
-        {[
-          { key: 'pool' as const, label: 'Пул (нераспределённые)' },
-          { key: 'upload' as const, label: 'Загрузить CSV/TXT' },
-          { key: 'all' as const, label: 'Все лиды' },
-        ].map(t => (
+      <div className="flex gap-1 border-b border-dark-700 pb-2 overflow-x-auto">
+        {([
+          { key: 'pool' as const, label: `Пул (${poolCount})` },
+          { key: 'touch1' as const, label: `Касание 1 (${touchStats.touch_1})` },
+          { key: 'touch2' as const, label: `Касание 2 (${touchStats.touch_2})` },
+          { key: 'touch3' as const, label: `Касание 3 (${touchStats.touch_3})` },
+          { key: 'touch4' as const, label: `Касание 4 (${touchStats.touch_4})` },
+          { key: 'trash' as const, label: `Мусор (${touchStats.trash})` },
+          { key: 'upload' as const, label: 'Загрузить' },
+          { key: 'all' as const, label: 'Все' },
+        ]).map(t => (
           <button key={t.key} onClick={() => setTab(t.key)}
-            className={`px-4 py-2 rounded-t-lg text-sm font-medium transition ${
+            className={`px-3 py-2 rounded-t-lg text-sm font-medium transition whitespace-nowrap ${
               tab === t.key ? 'bg-dark-800 text-primary-400 border border-dark-700 border-b-dark-900' : 'text-dark-400 hover:text-white'
-            }`}>{t.label}</button>
+            } ${t.key === 'trash' ? 'text-red-400' : ''}`}>{t.label}</button>
         ))}
       </div>
 
@@ -161,13 +184,27 @@ function OwnerLeads() {
         <div className="space-y-2">
           <div className="text-sm text-dark-400 mb-2">Найдено: {leads.length}</div>
           {leads.length === 0 ? (
-            <div className="card text-center text-dark-400 py-10">Нет лидов</div>
+            <div className="card text-center text-dark-400 py-10">
+              {tab === 'trash' ? (
+                <div className="flex flex-col items-center gap-2">
+                  <Trash2 size={32} className="text-dark-600" />
+                  <p>Мусорка пуста</p>
+                </div>
+              ) : 'Нет лидов'}
+            </div>
           ) : (
             leads.map(lead => (
-              <div key={lead.id} className="card py-3 px-4">
+              <div key={lead.id} className={`card py-3 px-4 ${tab === 'trash' ? 'border-l-2 border-red-500/50' : ''}`}>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium text-white">{lead.name}</p>
+                    <div className="flex items-center gap-2">
+                      <p className="font-medium text-white">{lead.name}</p>
+                      {lead.touch_count > 0 && (
+                        <span className={`text-xs font-medium ${touchColor(lead.touch_count)}`}>
+                          {lead.touch_count > 4 ? `${lead.touch_count} касаний` : `касание ${lead.touch_count}`}
+                        </span>
+                      )}
+                    </div>
                     <div className="flex items-center gap-3 text-xs text-dark-500 mt-1">
                       {lead.phone && <span className="flex items-center gap-1"><Phone size={10} /> {lead.phone}</span>}
                       {lead.telegram && <span>TG: {lead.telegram}</span>}

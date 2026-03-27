@@ -10,7 +10,7 @@ const router = express.Router();
 router.get('/', authMiddleware, (req, res) => {
   const db = getDb();
   try {
-    const { status, search, scout_id, pool } = req.query;
+    const { status, search, scout_id, pool, touch } = req.query;
     let query = `
       SELECT l.*, u.full_name as scout_name
       FROM leads l
@@ -28,6 +28,14 @@ router.get('/', authMiddleware, (req, res) => {
     } else if (scout_id) {
       conditions.push('l.scout_id = ?');
       params.push(parseInt(scout_id));
+    }
+
+    // Filter by touch count
+    if (touch === 'trash') {
+      conditions.push('l.touch_count > 4');
+    } else if (touch) {
+      conditions.push('l.touch_count = ?');
+      params.push(parseInt(touch));
     }
 
     if (status) { conditions.push('l.status = ?'); params.push(status); }
@@ -54,6 +62,43 @@ router.get('/pool-count', authMiddleware, (req, res) => {
   try {
     const { count } = db.prepare("SELECT COUNT(*) as count FROM leads WHERE status = 'new' AND scout_id IS NULL").get();
     res.json({ count });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+});
+
+// Get touch counts summary (for owner)
+router.get('/touch-stats', authMiddleware, (req, res) => {
+  const db = getDb();
+  try {
+    const stats = {
+      touch_0: db.prepare("SELECT COUNT(*) as count FROM leads WHERE touch_count = 0").get().count,
+      touch_1: db.prepare("SELECT COUNT(*) as count FROM leads WHERE touch_count = 1").get().count,
+      touch_2: db.prepare("SELECT COUNT(*) as count FROM leads WHERE touch_count = 2").get().count,
+      touch_3: db.prepare("SELECT COUNT(*) as count FROM leads WHERE touch_count = 3").get().count,
+      touch_4: db.prepare("SELECT COUNT(*) as count FROM leads WHERE touch_count = 4").get().count,
+      trash: db.prepare("SELECT COUNT(*) as count FROM leads WHERE touch_count > 4").get().count,
+    };
+    res.json(stats);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+});
+
+// Get touch history for a lead
+router.get('/:id/touches', authMiddleware, (req, res) => {
+  const db = getDb();
+  try {
+    const touches = db.prepare(`
+      SELECT lt.*, u.full_name as user_name
+      FROM lead_touches lt
+      LEFT JOIN users u ON lt.user_id = u.id
+      WHERE lt.lead_id = ?
+      ORDER BY lt.created_at ASC
+    `).all(req.params.id);
+    res.json(touches);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Ошибка сервера' });
@@ -138,6 +183,25 @@ router.put('/:id', authMiddleware, (req, res) => {
     // Scout can only update own leads
     if (userHasRole(req.user, 'scout') && !userHasRole(req.user, 'owner', 'admin') && lead.scout_id !== req.user.id) {
       return res.status(403).json({ error: 'Нет доступа' });
+    }
+
+    // If refused or ignored — record touch and return to pool
+    if (status === 'refused' || status === 'ignored') {
+      const newTouchCount = (lead.touch_count || 0) + 1;
+
+      // Record touch in lead_touches
+      db.prepare(`
+        INSERT INTO lead_touches (lead_id, user_id, touch_type, comment)
+        VALUES (?, ?, ?, ?)
+      `).run(lead.id, req.user.id, status, `Касание ${newTouchCount}: ${status === 'refused' ? 'Отказалась' : 'Игнор'}`);
+
+      // Increment touch_count, unassign lead, return to pool
+      db.prepare(`
+        UPDATE leads SET touch_count = ?, status = 'new', scout_id = NULL, assigned_at = NULL WHERE id = ?
+      `).run(newTouchCount, lead.id);
+
+      saveDatabase();
+      return res.json({ message: `Касание ${newTouchCount} записано, лид возвращён в пул` });
     }
 
     db.prepare('UPDATE leads SET status = ? WHERE id = ?').run(status, req.params.id);
