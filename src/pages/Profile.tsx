@@ -93,7 +93,7 @@ export default function Profile() {
             className="input-field" rows={3} placeholder="Расскажите о себе..." />
         </div>
         <div>
-          <label className="text-sm text-dark-300 mb-1 flex items-center gap-1"><Wallet size={14} /> Кошелёк для выплат</label>
+          <label className="text-sm text-dark-300 mb-1 flex items-center gap-1"><Wallet size={14} /> Кошелёк для выплат (TRC20)</label>
           <input value={form.wallet} onChange={e => setForm({ ...form, wallet: e.target.value })}
             className="input-field" placeholder="Номер карты / кошелька" />
         </div>

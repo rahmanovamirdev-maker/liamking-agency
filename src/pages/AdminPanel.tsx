@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { api } from '../api/client';
 import toast from 'react-hot-toast';
-import { Shield, Users, UserPlus, FileText, Activity, Plus, Edit3, Trash2 } from 'lucide-react';
+import { Shield, Users, UserPlus, FileText, Activity, Plus, Edit3, Trash2, Wallet } from 'lucide-react';
 
 const roleLabels: Record<string, string> = {
   owner: 'Владелец', admin: 'Админ', curator: 'Куратор', hr: 'HR Менеджер', scout: 'Скаут',
@@ -175,6 +175,7 @@ export default function AdminPanel() {
                   <div>
                     <p className="font-medium text-white">{u.full_name}</p>
                     <p className="text-xs text-dark-500">@{u.username} • {u.role.split(',').map((r: string) => roleLabels[r] || r).join(', ')} {u.squad_name ? `• ${u.squad_name}` : ''}</p>
+                    {u.wallet && <p className="text-xs text-dark-400 flex items-center gap-1"><Wallet size={12} /> {u.wallet}</p>}
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
