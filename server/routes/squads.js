@@ -83,6 +83,8 @@ router.put('/:id', authMiddleware, roleMiddleware('owner'), (req, res) => {
 
     values.push(req.params.id);
     db.prepare(`UPDATE squads SET ${updates.join(', ')} WHERE id = ?`).run(...values);
+    const { saveDatabase } = require('../database');
+    saveDatabase();
     res.json({ message: 'Сквад обновлён' });
   } catch (err) {
     console.error(err);
@@ -94,7 +96,11 @@ router.put('/:id', authMiddleware, roleMiddleware('owner'), (req, res) => {
 router.delete('/:id', authMiddleware, roleMiddleware('owner'), (req, res) => {
   const db = getDb();
   try {
+    db.prepare('UPDATE users SET squad_id = NULL, team_id = NULL WHERE squad_id = ?').run(req.params.id);
+    db.prepare('DELETE FROM teams WHERE squad_id = ?').run(req.params.id);
     db.prepare('DELETE FROM squads WHERE id = ?').run(req.params.id);
+    const { saveDatabase } = require('../database');
+    saveDatabase();
     res.json({ message: 'Сквад удалён' });
   } catch (err) {
     console.error(err);
@@ -129,6 +135,77 @@ router.post('/:squadId/teams', authMiddleware, roleMiddleware('owner', 'admin'),
     const result = db.prepare('INSERT INTO teams (name, squad_id, leader_id) VALUES (?, ?, ?)')
       .run(name, req.params.squadId, leader_id || null);
     res.status(201).json({ id: result.lastInsertRowid, message: 'Команда создана' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+});
+
+// Update team
+router.put('/teams/:teamId', authMiddleware, roleMiddleware('owner', 'admin'), (req, res) => {
+  const { name, leader_id } = req.body;
+  const db = getDb();
+  try {
+    const updates = [];
+    const values = [];
+    if (name) { updates.push('name = ?'); values.push(name); }
+    if (leader_id !== undefined) { updates.push('leader_id = ?'); values.push(leader_id || null); }
+    if (updates.length === 0) return res.status(400).json({ error: 'Нет данных' });
+
+    values.push(req.params.teamId);
+    db.prepare(`UPDATE teams SET ${updates.join(', ')} WHERE id = ?`).run(...values);
+    const { saveDatabase } = require('../database');
+    saveDatabase();
+    res.json({ message: 'Команда обновлена' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+});
+
+// Delete team
+router.delete('/teams/:teamId', authMiddleware, roleMiddleware('owner', 'admin'), (req, res) => {
+  const db = getDb();
+  try {
+    db.prepare('UPDATE users SET team_id = NULL WHERE team_id = ?').run(req.params.teamId);
+    db.prepare('DELETE FROM teams WHERE id = ?').run(req.params.teamId);
+    const { saveDatabase } = require('../database');
+    saveDatabase();
+    res.json({ message: 'Команда удалена' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+});
+
+// Add member to team
+router.post('/teams/:teamId/members', authMiddleware, roleMiddleware('owner', 'admin'), (req, res) => {
+  const { user_id } = req.body;
+  if (!user_id) return res.status(400).json({ error: 'Укажите пользователя' });
+
+  const db = getDb();
+  try {
+    const team = db.prepare('SELECT squad_id FROM teams WHERE id = ?').get(req.params.teamId);
+    if (!team) return res.status(404).json({ error: 'Команда не найдена' });
+
+    db.prepare('UPDATE users SET team_id = ?, squad_id = ? WHERE id = ?').run(req.params.teamId, team.squad_id, user_id);
+    const { saveDatabase } = require('../database');
+    saveDatabase();
+    res.json({ message: 'Участник добавлен' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+});
+
+// Remove member from team
+router.delete('/teams/:teamId/members/:userId', authMiddleware, roleMiddleware('owner', 'admin'), (req, res) => {
+  const db = getDb();
+  try {
+    db.prepare('UPDATE users SET team_id = NULL, squad_id = NULL WHERE id = ? AND team_id = ?').run(req.params.userId, req.params.teamId);
+    const { saveDatabase } = require('../database');
+    saveDatabase();
+    res.json({ message: 'Участник удалён из команды' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Ошибка сервера' });
