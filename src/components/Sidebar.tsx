@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import {
   Home, FileText, Users, BarChart3, Archive, Database,
-  Bell, User, Shield, Briefcase, UserCheck, LogOut, Zap, Gem
+  Bell, User, Shield, UserCheck, LogOut, Zap, Gem
 } from 'lucide-react';
 
 const roleLabels: Record<string, string> = {
@@ -30,7 +30,6 @@ export default function Sidebar() {
     { to: '/leads', icon: Database, label: 'БД Лидов', roles: ['owner', 'admin', 'scout'] },
     { to: '/archive', icon: Archive, label: 'Архив', roles: ['owner', 'admin', 'curator', 'hr', 'hr_huntme', 'hr_mason'] },
     { to: '/notifications', icon: Bell, label: 'Уведомления', roles: ['owner', 'admin', 'curator', 'hr', 'hr_huntme', 'hr_mason', 'scout'] },
-    { to: '/hr-panel', icon: Briefcase, label: 'HR Панель', roles: ['owner', 'hr'] },
     { to: '/curator-panel', icon: UserCheck, label: 'Панель Куратора', roles: ['owner', 'curator'] },
     { to: '/admin-panel', icon: Shield, label: 'Панель Управления', roles: ['owner'] },
     { to: '/profile', icon: User, label: 'Профиль', roles: ['owner', 'admin', 'curator', 'hr', 'hr_huntme', 'hr_mason', 'scout'] },

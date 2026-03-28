@@ -12,7 +12,6 @@ import Archive from './pages/Archive';
 import Notifications from './pages/Notifications';
 import Profile from './pages/Profile';
 import AdminPanel from './pages/AdminPanel';
-import HRPanel from './pages/HRPanel';
 import CuratorPanel from './pages/CuratorPanel';
 import HuntMe from './pages/HuntMe';
 import Mason from './pages/Mason';
@@ -44,9 +43,6 @@ export default function App() {
         <Route path="profile" element={<Profile />} />
         <Route path="admin-panel" element={
           <ProtectedRoute roles={['owner']}><AdminPanel /></ProtectedRoute>
-        } />
-        <Route path="hr-panel" element={
-          <ProtectedRoute roles={['owner', 'hr']}><HRPanel /></ProtectedRoute>
         } />
         <Route path="curator-panel" element={
           <ProtectedRoute roles={['owner', 'curator']}><CuratorPanel /></ProtectedRoute>
