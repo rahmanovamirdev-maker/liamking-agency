@@ -385,7 +385,7 @@ router.delete('/:id', authMiddleware, (req, res) => {
     if (!app) return res.status(404).json({ error: 'Анкета не найдена' });
 
     db.prepare('DELETE FROM application_history WHERE application_id = ?').run(req.params.id);
-    db.prepare('DELETE FROM chat_messages WHERE application_id = ?').run(req.params.id);
+    db.prepare('DELETE FROM application_messages WHERE application_id = ?').run(req.params.id);
     db.prepare('DELETE FROM notifications WHERE application_id = ?').run(req.params.id);
     db.prepare('DELETE FROM applications WHERE id = ?').run(req.params.id);
 
