@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth, hasRole } from '../contexts/AuthContext';
 import { api } from '../api/client';
 import toast from 'react-hot-toast';
-import { ArrowLeft, Clock, User, Phone, MessageCircle, Calendar, UserCircle, Monitor, Briefcase, Globe, Laptop, Languages, Send } from 'lucide-react';
+import { ArrowLeft, Clock, User, Phone, MessageCircle, Calendar, UserCircle, Monitor, Briefcase, Globe, Laptop, Languages, Send, X, ZoomIn } from 'lucide-react';
 import ApplicationChat from '../components/ApplicationChat';
 
 const statusColors: Record<string, string> = {
@@ -64,6 +64,7 @@ export default function ApplicationDetail() {
   const [app, setApp] = useState<any>(null);
   const [comment, setComment] = useState('');
   const [rejectionReason, setRejectionReason] = useState('');
+  const [photoOpen, setPhotoOpen] = useState(false);
 
   useEffect(() => {
     loadApp();
@@ -190,7 +191,27 @@ export default function ApplicationDetail() {
                 {app.candidate_photo && (
                   <div className="p-3 bg-dark-800 rounded-lg">
                     <p className="text-sm text-dark-300 mb-1">Фото</p>
-                    <img src={app.candidate_photo} alt="Фото кандидатки" className="max-w-xs rounded-lg mt-2" />
+                    <div className="relative inline-block mt-2 group cursor-pointer" onClick={() => setPhotoOpen(true)}>
+                      <img src={app.candidate_photo} alt="Фото кандидатки" className="max-w-xs max-h-64 rounded-lg object-cover" />
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                        <ZoomIn size={32} className="text-white" />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Photo lightbox */}
+                {photoOpen && app.candidate_photo && (
+                  <div className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4" onClick={() => setPhotoOpen(false)}>
+                    <button className="absolute top-4 right-4 p-2 rounded-full bg-dark-800/80 text-white hover:bg-dark-700 transition" onClick={() => setPhotoOpen(false)}>
+                      <X size={24} />
+                    </button>
+                    <img
+                      src={app.candidate_photo}
+                      alt="Фото кандидатки"
+                      className="max-w-full max-h-[90vh] rounded-lg object-contain"
+                      onClick={(e) => e.stopPropagation()}
+                    />
                   </div>
                 )}
               </div>
