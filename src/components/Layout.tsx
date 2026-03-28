@@ -25,14 +25,21 @@ export default function Layout() {
         </button>
       </div>
 
-      {/* Overlay */}
+      {/* Mobile overlay */}
       {sidebarOpen && (
         <div className="fixed inset-0 bg-black/60 z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />
       )}
 
-      {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-50 transition-transform duration-300 ease-in-out lg:static lg:z-auto lg:transform-none ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+      {/* Mobile sidebar */}
+      <div
+        className={`fixed inset-y-0 left-0 z-50 lg:hidden transition-transform duration-300 ease-in-out ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
+      >
         <Sidebar onNavigate={() => setSidebarOpen(false)} />
+      </div>
+
+      {/* Desktop sidebar */}
+      <div className="hidden lg:block shrink-0">
+        <Sidebar />
       </div>
 
       <main className="flex-1 overflow-auto pt-14 lg:pt-0">

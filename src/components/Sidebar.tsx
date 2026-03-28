@@ -38,7 +38,7 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   const filteredItems = navItems.filter(item => item.roles.some(r => user.roles.includes(r)));
 
   return (
-    <aside className="w-64 bg-dark-900 border-r border-dark-700 min-h-screen flex flex-col">
+    <aside className="w-64 bg-dark-900 border-r border-dark-700 h-screen sticky top-0 flex flex-col">
       {/* Logo */}
       <div className="p-5 border-b border-dark-700">
         <motion.div
