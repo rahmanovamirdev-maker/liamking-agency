@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../api/client';
-import { Archive as ArchiveIcon, Search, ChevronRight } from 'lucide-react';
+import { Archive as ArchiveIcon, Search, ChevronRight, Trash2 } from 'lucide-react';
 
 const statusColors: Record<string, string> = {
   pending_review: 'bg-yellow-500/20 text-yellow-400',
@@ -59,6 +59,15 @@ export default function Archive() {
     setLoading(false);
   }
 
+  async function deleteApp(id: number, name: string) {
+    if (!confirm(`Удалить анкету "${name}" безвозвратно?`)) return;
+    try {
+      await api.delete(`/applications/${id}`);
+      setApps(prev => prev.filter(a => a.id !== id));
+      setTotal(prev => prev - 1);
+    } catch { /* ignore */ }
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
@@ -111,9 +120,14 @@ export default function Archive() {
                     <td className="py-2 px-3 text-dark-300">{app.squad_name || '—'}</td>
                     <td className="py-2 px-3 text-dark-400">{new Date(app.created_at).toLocaleDateString('ru')}</td>
                     <td className="py-2 px-3">
-                      <Link to={`/applications/${app.id}`} className="text-primary-400 hover:text-primary-300">
-                        <ChevronRight size={16} />
-                      </Link>
+                      <div className="flex items-center gap-2">
+                        <Link to={`/applications/${app.id}`} className="text-primary-400 hover:text-primary-300">
+                          <ChevronRight size={16} />
+                        </Link>
+                        <button onClick={() => deleteApp(app.id, app.candidate_name)} className="text-red-500/60 hover:text-red-400 transition">
+                          <Trash2 size={15} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

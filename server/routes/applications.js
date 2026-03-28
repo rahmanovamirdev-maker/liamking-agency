@@ -373,4 +373,28 @@ router.put('/:id', authMiddleware, (req, res) => {
   }
 });
 
+// Delete application permanently (owner only)
+router.delete('/:id', authMiddleware, (req, res) => {
+  if (!userHasRole(req.user, 'owner')) {
+    return res.status(403).json({ error: 'Недостаточно прав' });
+  }
+
+  const db = getDb();
+  try {
+    const app = db.prepare('SELECT id FROM applications WHERE id = ?').get(req.params.id);
+    if (!app) return res.status(404).json({ error: 'Анкета не найдена' });
+
+    db.prepare('DELETE FROM application_history WHERE application_id = ?').run(req.params.id);
+    db.prepare('DELETE FROM chat_messages WHERE application_id = ?').run(req.params.id);
+    db.prepare('DELETE FROM notifications WHERE application_id = ?').run(req.params.id);
+    db.prepare('DELETE FROM applications WHERE id = ?').run(req.params.id);
+
+    saveDatabase();
+    res.json({ message: 'Анкета удалена' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+});
+
 module.exports = router;
