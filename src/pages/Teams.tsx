@@ -9,7 +9,7 @@ const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.08 } }
 const fadeUp = { hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0, transition: { duration: 0.35 } } };
 
 const roleLabels: Record<string, string> = {
-  owner: 'Владелец', admin: 'Админ', curator: 'Куратор', hr: 'HR', scout: 'Скаут',
+  owner: 'Владелец', admin: 'Админ', curator: 'Куратор', hr: 'HR', hr_huntme: 'HR HuntMe', hr_mason: 'HR Mason', scout: 'Скаут',
 };
 
 export default function Teams() {

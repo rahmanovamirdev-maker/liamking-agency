@@ -11,11 +11,16 @@ const fadeUp = { hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0, tra
 
 const statusLabels: Record<string, { label: string; color: string }> = {
   pending_review: { label: 'На рассмотрении', color: 'bg-yellow-500/20 text-yellow-400' },
-  reviewed: { label: 'Рассмотрено', color: 'bg-blue-500/20 text-blue-400' },
-  interviewing: { label: 'На собеседовании', color: 'bg-purple-500/20 text-purple-400' },
-  no_show: { label: 'Не пришёл(ла)', color: 'bg-orange-500/20 text-orange-400' },
-  registering: { label: 'На регистрации', color: 'bg-emerald-500/20 text-emerald-400' },
-  rejected: { label: 'Отказано', color: 'bg-red-500/20 text-red-400' },
+  directed: { label: 'Направлена', color: 'bg-blue-500/20 text-blue-400' },
+  recorded: { label: 'Записана', color: 'bg-cyan-500/20 text-cyan-400' },
+  interview_came: { label: 'Пришла на собеседование', color: 'bg-emerald-500/20 text-emerald-400' },
+  interview_noshow: { label: 'Не пришла на собеседование', color: 'bg-orange-500/20 text-orange-400' },
+  interview_ignored: { label: 'Игнор собеседования', color: 'bg-gray-500/20 text-gray-400' },
+  registration: { label: 'Регистрация', color: 'bg-green-500/20 text-green-400' },
+  active: { label: 'Активна', color: 'bg-emerald-600/20 text-emerald-300' },
+  training: { label: 'На обучении', color: 'bg-indigo-500/20 text-indigo-400' },
+  ignored: { label: 'Игнор', color: 'bg-gray-500/20 text-gray-400' },
+  rejected: { label: 'Отказ', color: 'bg-red-500/20 text-red-400' },
 };
 
 const typeLabels: Record<string, { label: string; icon: typeof UserCircle }> = {
@@ -302,9 +307,14 @@ export default function Applications() {
                     <span className="badge bg-dark-700 text-dark-300 text-xs">
                       {typeLabels[app.app_type]?.label || app.app_type}
                     </span>
-                    <span className={`badge ${statusLabels[app.status]?.color}`}>
-                      {statusLabels[app.status]?.label}
+                    <span className={`badge ${statusLabels[app.status]?.color || 'bg-dark-700 text-dark-300'}`}>
+                      {statusLabels[app.status]?.label || app.status}
                     </span>
+                    {app.direction && (
+                      <span className={`badge text-xs ${app.direction === 'huntme' ? 'bg-violet-500/20 text-violet-400' : 'bg-amber-500/20 text-amber-400'}`}>
+                        {app.direction === 'huntme' ? 'HuntMe' : 'Mason'}
+                      </span>
+                    )}
                   </div>
                   <div className="flex items-center gap-4 mt-1 text-xs text-dark-500 ml-8">
                     {app.candidate_phone && <span>{app.candidate_phone}</span>}

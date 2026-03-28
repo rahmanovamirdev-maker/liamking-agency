@@ -18,6 +18,8 @@ const roleLabels: Record<string, string> = {
   admin: 'Админ',
   curator: 'Куратор',
   hr: 'HR',
+  hr_huntme: 'HR HuntMe',
+  hr_mason: 'HR Mason',
   scout: 'Скаут',
 };
 

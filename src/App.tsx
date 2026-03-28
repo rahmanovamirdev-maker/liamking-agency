@@ -14,6 +14,8 @@ import Profile from './pages/Profile';
 import AdminPanel from './pages/AdminPanel';
 import HRPanel from './pages/HRPanel';
 import CuratorPanel from './pages/CuratorPanel';
+import HuntMe from './pages/HuntMe';
+import Mason from './pages/Mason';
 import PostDetail from './pages/PostDetail';
 
 export default function App() {
@@ -26,11 +28,17 @@ export default function App() {
         <Route path="applications/:id" element={<ApplicationDetail />} />
         <Route path="teams" element={<Teams />} />
         <Route path="statistics" element={<Statistics />} />
+        <Route path="huntme" element={
+          <ProtectedRoute roles={['owner', 'admin', 'hr_huntme']}><HuntMe /></ProtectedRoute>
+        } />
+        <Route path="mason" element={
+          <ProtectedRoute roles={['owner', 'admin', 'hr_mason']}><Mason /></ProtectedRoute>
+        } />
         <Route path="leads" element={
           <ProtectedRoute roles={['owner', 'admin', 'scout']}><Leads /></ProtectedRoute>
         } />
         <Route path="archive" element={
-          <ProtectedRoute roles={['owner', 'admin', 'curator', 'hr']}><Archive /></ProtectedRoute>
+          <ProtectedRoute roles={['owner', 'admin', 'curator', 'hr', 'hr_huntme', 'hr_mason']}><Archive /></ProtectedRoute>
         } />
         <Route path="notifications" element={<Notifications />} />
         <Route path="profile" element={<Profile />} />

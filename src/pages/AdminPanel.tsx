@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import { Shield, Users, UserPlus, FileText, Activity, Plus, Edit3, Trash2, Wallet } from 'lucide-react';
 
 const roleLabels: Record<string, string> = {
-  owner: 'Владелец', admin: 'Админ', curator: 'Куратор', hr: 'HR Менеджер', scout: 'Скаут',
+  owner: 'Владелец', admin: 'Админ', curator: 'Куратор', hr: 'HR Менеджер', hr_huntme: 'HR HuntMe', hr_mason: 'HR Mason', scout: 'Скаут',
 };
 
 export default function AdminPanel() {
@@ -322,7 +322,7 @@ function EditUserModal({ user, squads, onSave, onClose }: any) {
           <div>
             <p className="text-sm text-dark-300 mb-2">Роли</p>
             <div className="flex flex-wrap gap-2">
-              {(['owner', 'admin', 'curator', 'hr', 'scout'] as const).map(key => (
+              {(['owner', 'admin', 'curator', 'hr', 'hr_huntme', 'hr_mason', 'scout'] as const).map(key => (
                 <label key={key} className="flex items-center gap-1.5 text-sm text-dark-300 cursor-pointer">
                   <input type="checkbox" checked={form.roles.includes(key)}
                     onChange={e => {
@@ -332,7 +332,7 @@ function EditUserModal({ user, squads, onSave, onClose }: any) {
                       setForm({ ...form, roles: newRoles.length ? newRoles : ['scout'] });
                     }}
                     className="w-4 h-4 rounded border-dark-500 bg-dark-800" />
-                  {key === 'owner' ? 'Владелец' : key === 'admin' ? 'Админ' : key === 'curator' ? 'Куратор' : key === 'hr' ? 'HR Менеджер' : 'Скаут'}
+                  {roleLabels[key] || key}
                 </label>
               ))}
             </div>

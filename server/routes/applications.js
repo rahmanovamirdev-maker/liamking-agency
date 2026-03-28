@@ -11,11 +11,23 @@ function createNotification(db, userId, type, title, message, applicationId) {
   `).run(userId, type, title, message, applicationId || null);
 }
 
+// Valid statuses per direction + app_type for HR
+const directionStatuses = {
+  huntme: {
+    model: ['recorded', 'interview_came', 'registration', 'active', 'interview_noshow', 'rejected', 'interview_ignored'],
+    operator: ['recorded', 'interview_came', 'training', 'rejected', 'interview_ignored'],
+  },
+  mason: {
+    model: ['ignored', 'interview_came', 'interview_noshow', 'registration', 'rejected'],
+    operator: ['ignored', 'interview_came', 'interview_noshow', 'registration', 'rejected'],
+  },
+};
+
 // Get applications (filtered by role)
 router.get('/', authMiddleware, (req, res) => {
   const db = getDb();
   try {
-    const { status, squad_id, search, app_type, page = 1, limit = 50 } = req.query;
+    const { status, squad_id, search, app_type, direction, page = 1, limit = 50 } = req.query;
     let query = `
       SELECT a.*,
         scout.full_name as scout_name,
@@ -34,7 +46,7 @@ router.get('/', authMiddleware, (req, res) => {
     const conditions = [];
     const params = [];
 
-    // Role-based filtering (pick the highest-privilege role for filtering)
+    // Role-based filtering
     const userRoles = req.user.role.split(',');
     if (userHasRole(req.user, 'owner')) {
       // owner sees all
@@ -47,16 +59,28 @@ router.get('/', authMiddleware, (req, res) => {
         conditions.push('a.admin_id = ?');
         params.push(req.user.id);
       }
-    } else {
-      // Build OR conditions for each non-owner/non-admin role
+    } else if (userHasRole(req.user, 'hr_huntme') || userHasRole(req.user, 'hr_mason')) {
       const roleConds = [];
-      if (userRoles.includes('curator')) {
-        roleConds.push('(a.curator_id = ? OR a.status = ?)');
-        params.push(req.user.id, 'reviewed');
+      if (userRoles.includes('hr_huntme')) {
+        roleConds.push("a.direction = 'huntme'");
       }
+      if (userRoles.includes('hr_mason')) {
+        roleConds.push("a.direction = 'mason'");
+      }
+      if (userRoles.includes('scout')) {
+        roleConds.push('a.scout_id = ?');
+        params.push(req.user.id);
+      }
+      if (roleConds.length > 0) {
+        conditions.push('(' + roleConds.join(' OR ') + ')');
+      } else {
+        conditions.push('1=0');
+      }
+    } else {
+      const roleConds = [];
       if (userRoles.includes('hr')) {
-        roleConds.push('(a.hr_id = ? OR a.status = ?)');
-        params.push(req.user.id, 'interviewing');
+        roleConds.push('a.hr_id = ?');
+        params.push(req.user.id);
       }
       if (userRoles.includes('scout')) {
         roleConds.push('a.scout_id = ?');
@@ -76,6 +100,10 @@ router.get('/', authMiddleware, (req, res) => {
     if (app_type) {
       conditions.push('a.app_type = ?');
       params.push(app_type);
+    }
+    if (direction) {
+      conditions.push('a.direction = ?');
+      params.push(direction);
     }
     if (squad_id) {
       conditions.push('a.squad_id = ?');
@@ -138,7 +166,7 @@ router.get('/:id', authMiddleware, (req, res) => {
     if (!app) return res.status(404).json({ error: 'Анкета не найдена' });
 
     const history = db.prepare(`
-      SELECT h.*, u.full_name as user_name
+      Select h.*, u.full_name as user_name
       FROM application_history h
       LEFT JOIN users u ON h.changed_by = u.id
       WHERE h.application_id = ?
@@ -214,63 +242,83 @@ router.post('/', authMiddleware, (req, res) => {
   }
 });
 
-// Update application status
+// Direct application to partner (admin sets direction: huntme or mason)
+router.put('/:id/direction', authMiddleware, (req, res) => {
+  if (!userHasRole(req.user, 'owner', 'admin')) {
+    return res.status(403).json({ error: 'Недостаточно прав' });
+  }
+
+  const { direction } = req.body;
+  if (!direction || !['huntme', 'mason'].includes(direction)) {
+    return res.status(400).json({ error: 'Укажите направление: huntme или mason' });
+  }
+
+  const db = getDb();
+  try {
+    const app = db.prepare('SELECT * FROM applications WHERE id = ?').get(req.params.id);
+    if (!app) return res.status(404).json({ error: 'Анкета не найдена' });
+    if (app.status !== 'pending_review') {
+      return res.status(400).json({ error: 'Анкету можно направить только со статуса "На рассмотрении"' });
+    }
+
+    db.prepare(`UPDATE applications SET direction = ?, status = 'directed', admin_id = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`)
+      .run(direction, req.user.id, req.params.id);
+
+    const dirLabel = direction === 'huntme' ? 'HuntMe' : 'Mason';
+    db.prepare(`
+      INSERT INTO application_history (application_id, old_status, new_status, changed_by, comment)
+      VALUES (?, ?, 'directed', ?, ?)
+    `).run(req.params.id, app.status, req.user.id, `Направлена на партнёра: ${dirLabel}`);
+
+    // Notify scout
+    createNotification(db, app.scout_id, 'status_change', 'Анкета направлена',
+      `Анкета "${app.candidate_name}" направлена на ${dirLabel}`, app.id);
+
+    saveDatabase();
+    res.json({ message: `Анкета направлена на ${dirLabel}` });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+});
+
+// Update application status (HR flow within direction)
 router.put('/:id/status', authMiddleware, (req, res) => {
-  const { status, comment, curator_id, hr_id } = req.body;
+  const { status, comment, rejection_reason } = req.body;
   if (!status) return res.status(400).json({ error: 'Укажите новый статус' });
 
-  const allowedTransitions = {
-    owner: {
-      pending_review: ['reviewed', 'rejected'],
-      reviewed: ['interviewing', 'rejected'],
-      interviewing: ['registering', 'no_show', 'rejected'],
-      no_show: ['interviewing', 'rejected'],
-      registering: ['rejected'],
-      rejected: ['pending_review'],
-    },
-    admin: {
-      pending_review: ['reviewed', 'rejected'],
-    },
-    curator: {
-      reviewed: ['interviewing'],
-      interviewing: ['registering', 'no_show', 'rejected'],
-    },
-    hr: {
-      registering: ['rejected'],
-    },
-    scout: {},
-  };
+  const db = getDb();
+  try {
+    const app = db.prepare('SELECT * FROM applications WHERE id = ?').get(req.params.id);
+    if (!app) return res.status(404).json({ error: 'Анкета не найдена' });
 
-  const role = req.user.role;
-    const userRoles = role.split(',');
-    const db = getDb();
-    try {
-      const app = db.prepare('SELECT * FROM applications WHERE id = ?').get(req.params.id);
-      if (!app) return res.status(404).json({ error: 'Анкета не найдена' });
-
-      // Merge allowed transitions from all user roles
-      const mergedAllowed = new Set();
-      for (const r of userRoles) {
-        const trans = allowedTransitions[r]?.[app.status];
-        if (trans) trans.forEach(t => mergedAllowed.add(t));
+    // Owner can do anything
+    if (userHasRole(req.user, 'owner')) {
+      // allowed
+    } else if (userHasRole(req.user, 'admin')) {
+      if (app.status === 'pending_review' && status === 'rejected') {
+        // allowed
+      } else {
+        return res.status(403).json({ error: 'Админ может только отклонить анкету на рассмотрении' });
       }
-      if (!mergedAllowed.has(status)) {
+    } else if (userHasRole(req.user, 'hr_huntme')) {
+      if (app.direction !== 'huntme') return res.status(403).json({ error: 'Нет доступа к этому направлению' });
+      const allowed = directionStatuses.huntme[app.app_type] || [];
+      if (!allowed.includes(status)) return res.status(400).json({ error: 'Недопустимый статус для данного направления' });
+    } else if (userHasRole(req.user, 'hr_mason')) {
+      if (app.direction !== 'mason') return res.status(403).json({ error: 'Нет доступа к этому направлению' });
+      const allowed = directionStatuses.mason[app.app_type] || [];
+      if (!allowed.includes(status)) return res.status(400).json({ error: 'Недопустимый статус для данного направления' });
+    } else {
+      return res.status(403).json({ error: 'Недостаточно прав' });
     }
 
     const updates = ['status = ?', 'updated_at = CURRENT_TIMESTAMP'];
     const values = [status];
 
-    if (status === 'reviewed') {
-      updates.push('admin_id = ?');
-      values.push(req.user.id);
-    }
-    if (curator_id || status === 'interviewing') {
-      updates.push('curator_id = ?');
-      values.push(curator_id || req.user.id);
-    }
-    if (hr_id || status === 'registering') {
-      updates.push('hr_id = ?');
-      values.push(hr_id || req.user.id);
+    if (rejection_reason && status === 'rejected') {
+      updates.push('rejection_reason = ?');
+      values.push(rejection_reason);
     }
 
     values.push(req.params.id);
@@ -281,18 +329,9 @@ router.put('/:id/status', authMiddleware, (req, res) => {
       VALUES (?, ?, ?, ?, ?)
     `).run(req.params.id, app.status, status, req.user.id, comment || '');
 
-    const statusMessages = {
-      'reviewed': { userId: app.scout_id, title: 'Анкета рассмотрена', msg: `Анкета "${app.candidate_name}" рассмотрена и одобрена` },
-      'interviewing': { userId: curator_id, title: 'Новая анкета для собеседования', msg: `Вам назначена анкета: ${app.candidate_name}` },
-      'no_show': { userId: app.scout_id, title: 'Не пришёл(ла)', msg: `Кандидат ${app.candidate_name} не пришёл(ла) на собеседование` },
-      'registering': { userId: hr_id, title: 'Кандидат на регистрацию', msg: `Новый кандидат для регистрации: ${app.candidate_name}` },
-      'rejected': { userId: app.scout_id, title: 'Отказано', msg: `Анкета "${app.candidate_name}" — отказано` },
-    };
-
-    const notif = statusMessages[status];
-    if (notif && notif.userId) {
-      createNotification(db, notif.userId, 'status_change', notif.title, notif.msg, app.id);
-    }
+    // Notify scout about status change
+    createNotification(db, app.scout_id, 'status_change', 'Статус анкеты изменён',
+      `Анкета "${app.candidate_name}" — новый статус`, app.id);
 
     saveDatabase();
     res.json({ message: 'Статус обновлён' });

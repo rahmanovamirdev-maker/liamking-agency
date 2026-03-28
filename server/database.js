@@ -165,9 +165,8 @@ async function initDatabase() {
       english_level TEXT DEFAULT '',
       work_experience TEXT DEFAULT '',
       pc_specs TEXT DEFAULT '',
-      status TEXT NOT NULL DEFAULT 'pending_review' CHECK(status IN (
-        'pending_review','reviewed','interviewing','no_show','registering','rejected'
-      )),
+      status TEXT NOT NULL DEFAULT 'pending_review',
+      direction TEXT DEFAULT NULL,
       scout_id INTEGER NOT NULL,
       admin_id INTEGER DEFAULT NULL,
       curator_id INTEGER DEFAULT NULL,
