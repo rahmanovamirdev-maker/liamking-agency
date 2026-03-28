@@ -8,17 +8,35 @@ import { Search, Filter, ChevronRight, UserCircle, Monitor } from 'lucide-react'
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.05 } } };
 const fadeUp = { hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0, transition: { duration: 0.3 } } };
 
-const statusLabels: Record<string, { label: string; color: string }> = {
-  directed: { label: 'Направлена', color: 'bg-blue-500/20 text-blue-400' },
-  recorded: { label: 'Записана', color: 'bg-cyan-500/20 text-cyan-400' },
-  interview_came: { label: 'Пришла на собеседование', color: 'bg-emerald-500/20 text-emerald-400' },
-  interview_noshow: { label: 'Не пришла на собеседование', color: 'bg-orange-500/20 text-orange-400' },
-  interview_ignored: { label: 'Игнор собеседования', color: 'bg-gray-500/20 text-gray-400' },
-  registration: { label: 'Регистрация', color: 'bg-green-500/20 text-green-400' },
-  active: { label: 'Активна', color: 'bg-emerald-600/20 text-emerald-300' },
-  training: { label: 'На обучении', color: 'bg-indigo-500/20 text-indigo-400' },
-  rejected: { label: 'Отказ', color: 'bg-red-500/20 text-red-400' },
+const statusColors: Record<string, string> = {
+  directed: 'bg-blue-500/20 text-blue-400',
+  recorded: 'bg-cyan-500/20 text-cyan-400',
+  interview_came: 'bg-emerald-500/20 text-emerald-400',
+  interview_noshow: 'bg-orange-500/20 text-orange-400',
+  interview_ignored: 'bg-gray-500/20 text-gray-400',
+  registration: 'bg-green-500/20 text-green-400',
+  active: 'bg-emerald-600/20 text-emerald-300',
+  training: 'bg-indigo-500/20 text-indigo-400',
+  rejected: 'bg-red-500/20 text-red-400',
 };
+
+const statusLabelsGendered: Record<string, { f: string; m: string }> = {
+  directed: { f: 'Направлена', m: 'Направлен' },
+  recorded: { f: 'Записана', m: 'Записан' },
+  interview_came: { f: 'Пришла на собеседование', m: 'Пришёл на собеседование' },
+  interview_noshow: { f: 'Не пришла на собеседование', m: 'Не пришёл на собеседование' },
+  interview_ignored: { f: 'Игнор собеседования', m: 'Игнор собеседования' },
+  registration: { f: 'Регистрация', m: 'Регистрация' },
+  active: { f: 'Активна', m: 'Активен' },
+  training: { f: 'На обучении', m: 'На обучении' },
+  rejected: { f: 'Отказ', m: 'Отказ' },
+};
+
+function getStatusLabel(status: string, appType?: string): string {
+  const entry = statusLabelsGendered[status];
+  if (!entry) return status;
+  return appType === 'operator' ? entry.m : entry.f;
+}
 
 const typeLabels: Record<string, { label: string; icon: typeof UserCircle }> = {
   model: { label: 'Модель', icon: UserCircle },
@@ -88,8 +106,8 @@ export default function HuntMe() {
           </select>
           <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} className="input-field w-auto">
             <option value="">Все статусы</option>
-            {Object.entries(statusLabels).map(([key, { label }]) => (
-              <option key={key} value={key}>{label}</option>
+            {Object.entries(statusLabelsGendered).map(([key, { f }]) => (
+              <option key={key} value={key}>{f}</option>
             ))}
           </select>
         </div>
@@ -117,8 +135,8 @@ export default function HuntMe() {
                       <span className="badge bg-dark-700 text-dark-300 text-xs">
                         {typeLabels[app.app_type]?.label || app.app_type}
                       </span>
-                      <span className={`badge ${statusLabels[app.status]?.color || 'bg-dark-700 text-dark-300'}`}>
-                        {statusLabels[app.status]?.label || app.status}
+                      <span className={`badge ${statusColors[app.status] || 'bg-dark-700 text-dark-300'}`}>
+                        {getStatusLabel(app.status, app.app_type)}
                       </span>
                     </div>
                     <div className="flex items-center gap-4 mt-1 text-xs text-dark-500 ml-8">

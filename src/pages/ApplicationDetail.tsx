@@ -6,19 +6,39 @@ import toast from 'react-hot-toast';
 import { ArrowLeft, Clock, User, Phone, MessageCircle, Calendar, UserCircle, Monitor, Briefcase, Globe, Laptop, Languages, Send } from 'lucide-react';
 import ApplicationChat from '../components/ApplicationChat';
 
-const statusLabels: Record<string, { label: string; color: string }> = {
-  pending_review: { label: 'На рассмотрении', color: 'bg-yellow-500/20 text-yellow-400' },
-  directed: { label: 'Направлена', color: 'bg-blue-500/20 text-blue-400' },
-  recorded: { label: 'Записана', color: 'bg-cyan-500/20 text-cyan-400' },
-  interview_came: { label: 'Пришла на собеседование', color: 'bg-emerald-500/20 text-emerald-400' },
-  interview_noshow: { label: 'Не пришла на собеседование', color: 'bg-orange-500/20 text-orange-400' },
-  interview_ignored: { label: 'Игнор собеседования', color: 'bg-gray-500/20 text-gray-400' },
-  registration: { label: 'Регистрация', color: 'bg-green-500/20 text-green-400' },
-  active: { label: 'Активна', color: 'bg-emerald-600/20 text-emerald-300' },
-  training: { label: 'На обучении', color: 'bg-indigo-500/20 text-indigo-400' },
-  ignored: { label: 'Игнор', color: 'bg-gray-500/20 text-gray-400' },
-  rejected: { label: 'Отказ', color: 'bg-red-500/20 text-red-400' },
+const statusColors: Record<string, string> = {
+  pending_review: 'bg-yellow-500/20 text-yellow-400',
+  directed: 'bg-blue-500/20 text-blue-400',
+  recorded: 'bg-cyan-500/20 text-cyan-400',
+  interview_came: 'bg-emerald-500/20 text-emerald-400',
+  interview_noshow: 'bg-orange-500/20 text-orange-400',
+  interview_ignored: 'bg-gray-500/20 text-gray-400',
+  registration: 'bg-green-500/20 text-green-400',
+  active: 'bg-emerald-600/20 text-emerald-300',
+  training: 'bg-indigo-500/20 text-indigo-400',
+  ignored: 'bg-gray-500/20 text-gray-400',
+  rejected: 'bg-red-500/20 text-red-400',
 };
+
+const statusLabelsGendered: Record<string, { f: string; m: string }> = {
+  pending_review: { f: 'На рассмотрении', m: 'На рассмотрении' },
+  directed: { f: 'Направлена', m: 'Направлен' },
+  recorded: { f: 'Записана', m: 'Записан' },
+  interview_came: { f: 'Пришла на собеседование', m: 'Пришёл на собеседование' },
+  interview_noshow: { f: 'Не пришла на собеседование', m: 'Не пришёл на собеседование' },
+  interview_ignored: { f: 'Игнор собеседования', m: 'Игнор собеседования' },
+  registration: { f: 'Регистрация', m: 'Регистрация' },
+  active: { f: 'Активна', m: 'Активен' },
+  training: { f: 'На обучении', m: 'На обучении' },
+  ignored: { f: 'Игнор', m: 'Игнор' },
+  rejected: { f: 'Отказ', m: 'Отказ' },
+};
+
+function getStatusLabel(status: string, appType?: string): string {
+  const entry = statusLabelsGendered[status];
+  if (!entry) return status;
+  return appType === 'operator' ? entry.m : entry.f;
+}
 
 const directionLabels: Record<string, string> = {
   huntme: 'HuntMe',
@@ -129,8 +149,8 @@ export default function ApplicationDetail() {
             )}
           </p>
         </div>
-        <span className={`badge text-sm px-3 py-1 ${statusLabels[app.status]?.color || 'bg-dark-700 text-dark-300'}`}>
-          {statusLabels[app.status]?.label || app.status}
+        <span className={`badge text-sm px-3 py-1 ${statusColors[app.status] || 'bg-dark-700 text-dark-300'}`}>
+          {getStatusLabel(app.status, app.app_type)}
         </span>
       </div>
 
@@ -241,7 +261,7 @@ export default function ApplicationDetail() {
               <div className="flex flex-wrap gap-2">
                 {availableStatuses.filter(s => s !== 'rejected').map(s => (
                   <button key={s} onClick={() => changeStatus(s)} className="btn-primary">
-                    {statusLabels[s]?.label || s}
+                    {getStatusLabel(s, app.app_type)}
                   </button>
                 ))}
                 {availableStatuses.includes('rejected') && (
@@ -280,8 +300,8 @@ export default function ApplicationDetail() {
                     <Clock size={16} className="text-dark-400 mt-0.5 shrink-0" />
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className={`badge text-xs ${statusLabels[h.new_status]?.color || 'bg-dark-700 text-dark-300'}`}>
-                          {statusLabels[h.new_status]?.label || h.new_status}
+                        <span className={`badge text-xs ${statusColors[h.new_status] || 'bg-dark-700 text-dark-300'}`}>
+                          {getStatusLabel(h.new_status, app.app_type)}
                         </span>
                         <span className="text-xs text-dark-500">{h.user_name}</span>
                         <span className="text-xs text-dark-600">{new Date(h.created_at).toLocaleString('ru')}</span>

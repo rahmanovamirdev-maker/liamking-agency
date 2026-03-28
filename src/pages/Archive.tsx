@@ -3,14 +3,38 @@ import { Link } from 'react-router-dom';
 import { api } from '../api/client';
 import { Archive as ArchiveIcon, Search, ChevronRight } from 'lucide-react';
 
-const statusLabels: Record<string, { label: string; color: string }> = {
-  pending_review: { label: 'На рассмотрении', color: 'bg-yellow-500/20 text-yellow-400' },
-  reviewed: { label: 'Рассмотрено', color: 'bg-blue-500/20 text-blue-400' },
-  interviewing: { label: 'На собеседовании', color: 'bg-purple-500/20 text-purple-400' },
-  no_show: { label: 'Не пришёл(ла)', color: 'bg-orange-500/20 text-orange-400' },
-  registering: { label: 'На регистрации', color: 'bg-emerald-500/20 text-emerald-400' },
-  rejected: { label: 'Отказано', color: 'bg-red-500/20 text-red-400' },
+const statusColors: Record<string, string> = {
+  pending_review: 'bg-yellow-500/20 text-yellow-400',
+  directed: 'bg-blue-500/20 text-blue-400',
+  recorded: 'bg-cyan-500/20 text-cyan-400',
+  interview_came: 'bg-emerald-500/20 text-emerald-400',
+  interview_noshow: 'bg-orange-500/20 text-orange-400',
+  interview_ignored: 'bg-gray-500/20 text-gray-400',
+  registration: 'bg-green-500/20 text-green-400',
+  active: 'bg-emerald-600/20 text-emerald-300',
+  training: 'bg-indigo-500/20 text-indigo-400',
+  ignored: 'bg-gray-500/20 text-gray-400',
+  rejected: 'bg-red-500/20 text-red-400',
 };
+
+function getStatusLabel(status: string, appType?: string): string {
+  const labels: Record<string, { f: string; m: string }> = {
+    pending_review: { f: 'На рассмотрении', m: 'На рассмотрении' },
+    directed: { f: 'Направлена', m: 'Направлен' },
+    recorded: { f: 'Записана', m: 'Записан' },
+    interview_came: { f: 'Пришла на собеседование', m: 'Пришёл на собеседование' },
+    interview_noshow: { f: 'Не пришла на собеседование', m: 'Не пришёл на собеседование' },
+    interview_ignored: { f: 'Игнор собеседования', m: 'Игнор собеседования' },
+    registration: { f: 'Регистрация', m: 'Регистрация' },
+    active: { f: 'Активна', m: 'Активен' },
+    training: { f: 'На обучении', m: 'На обучении' },
+    ignored: { f: 'Игнор', m: 'Игнор' },
+    rejected: { f: 'Отказ', m: 'Отказ' },
+  };
+  const entry = labels[status];
+  if (!entry) return status;
+  return appType === 'operator' ? entry.m : entry.f;
+}
 
 export default function Archive() {
   const [apps, setApps] = useState<any[]>([]);
@@ -79,8 +103,8 @@ export default function Archive() {
                     <td className="py-2 px-3 text-white font-medium">{app.candidate_name}</td>
                     <td className="py-2 px-3 text-dark-300">{app.candidate_phone || '—'}</td>
                     <td className="py-2 px-3">
-                      <span className={`badge ${statusLabels[app.status]?.color}`}>
-                        {statusLabels[app.status]?.label}
+                      <span className={`badge ${statusColors[app.status] || 'bg-dark-700 text-dark-300'}`}>
+                        {getStatusLabel(app.status, app.app_type)}
                       </span>
                     </td>
                     <td className="py-2 px-3 text-dark-300">{app.scout_name}</td>
