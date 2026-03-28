@@ -9,7 +9,7 @@ const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.1 } } 
 const fadeUp = { hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.4 } } };
 
 const roleLabels: Record<string, string> = {
-  owner: 'Владелец', admin: 'Админ', curator: 'Куратор', hr: 'HR Менеджер', hr_huntme: 'HR HuntMe', hr_mason: 'HR Mason', scout: 'Скаут',
+  owner: 'Владелец', team_leader: 'Сквад Лидер', admin: 'Админ', curator: 'Куратор', hr: 'HR Менеджер', hr_huntme: 'HR HuntMe', hr_mason: 'HR Mason', scout: 'Скаут',
 };
 
 export default function Profile() {

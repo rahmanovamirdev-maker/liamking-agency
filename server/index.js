@@ -20,6 +20,7 @@ app.use('/api/leads', require('./routes/leads'));
 app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/stats', require('./routes/stats'));
 app.use('/api/chat', require('./routes/chat'));
+app.use('/api/upload', require('./routes/upload'));
 
 // Serve static files in production
 const distPath = path.join(__dirname, '..', 'dist');

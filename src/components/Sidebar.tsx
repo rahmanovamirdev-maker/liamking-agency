@@ -7,32 +7,32 @@ import {
 } from 'lucide-react';
 
 const roleLabels: Record<string, string> = {
-  owner: 'Владелец', admin: 'Админ', curator: 'Куратор', hr: 'HR Менеджер', hr_huntme: 'HR HuntMe', hr_mason: 'HR Mason', scout: 'Скаут'
+  owner: 'Владелец', team_leader: 'Сквад Лидер', admin: 'Админ', curator: 'Куратор', hr: 'HR Менеджер', hr_huntme: 'HR HuntMe', hr_mason: 'HR Mason', scout: 'Скаут'
 };
 
 function formatRoles(roles: string[]): string {
   return roles.map(r => roleLabels[r] || r).join(', ');
 }
 
-export default function Sidebar() {
+export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   if (!user) return null;
 
   const navItems = [
-    { to: '/', icon: Home, label: 'Главная', roles: ['owner', 'admin', 'curator', 'hr', 'hr_huntme', 'hr_mason', 'scout'] },
-    { to: '/applications', icon: FileText, label: 'Анкеты', roles: ['owner', 'admin', 'curator', 'hr', 'hr_huntme', 'hr_mason', 'scout'] },
-    { to: '/teams', icon: Users, label: 'Команды', roles: ['owner', 'admin', 'curator', 'hr', 'hr_huntme', 'hr_mason', 'scout'] },
-    { to: '/statistics', icon: BarChart3, label: 'Статистика', roles: ['owner', 'admin', 'curator', 'hr', 'hr_huntme', 'hr_mason', 'scout'] },
-    { to: '/huntme', icon: Zap, label: 'HuntMe', roles: ['owner', 'admin', 'hr_huntme'] },
-    { to: '/mason', icon: Gem, label: 'Mason', roles: ['owner', 'admin', 'hr_mason'] },
-    { to: '/leads', icon: Database, label: 'БД Лидов', roles: ['owner', 'admin', 'scout'] },
-    { to: '/archive', icon: Archive, label: 'Архив', roles: ['owner', 'admin', 'curator', 'hr', 'hr_huntme', 'hr_mason'] },
-    { to: '/notifications', icon: Bell, label: 'Уведомления', roles: ['owner', 'admin', 'curator', 'hr', 'hr_huntme', 'hr_mason', 'scout'] },
+    { to: '/', icon: Home, label: 'Главная', roles: ['owner', 'team_leader', 'admin', 'curator', 'hr', 'hr_huntme', 'hr_mason', 'scout'] },
+    { to: '/applications', icon: FileText, label: 'Анкеты', roles: ['owner', 'team_leader', 'admin', 'curator', 'hr', 'hr_huntme', 'hr_mason', 'scout'] },
+    { to: '/teams', icon: Users, label: 'Команды', roles: ['owner', 'team_leader', 'admin', 'curator', 'hr', 'hr_huntme', 'hr_mason', 'scout'] },
+    { to: '/statistics', icon: BarChart3, label: 'Статистика', roles: ['owner', 'team_leader', 'admin', 'curator', 'hr', 'hr_huntme', 'hr_mason', 'scout'] },
+    { to: '/huntme', icon: Zap, label: 'HuntMe', roles: ['owner', 'team_leader', 'hr_huntme'] },
+    { to: '/mason', icon: Gem, label: 'Mason', roles: ['owner', 'team_leader', 'hr_mason'] },
+    { to: '/leads', icon: Database, label: 'БД Лидов', roles: ['owner', 'team_leader', 'scout'] },
+    { to: '/archive', icon: Archive, label: 'Архив', roles: ['owner', 'team_leader', 'curator', 'hr', 'hr_huntme', 'hr_mason'] },
+    { to: '/notifications', icon: Bell, label: 'Уведомления', roles: ['owner', 'team_leader', 'admin', 'curator', 'hr', 'hr_huntme', 'hr_mason', 'scout'] },
     { to: '/curator-panel', icon: UserCheck, label: 'Панель Куратора', roles: ['owner', 'curator'] },
     { to: '/admin-panel', icon: Shield, label: 'Панель Управления', roles: ['owner'] },
-    { to: '/profile', icon: User, label: 'Профиль', roles: ['owner', 'admin', 'curator', 'hr', 'hr_huntme', 'hr_mason', 'scout'] },
+    { to: '/profile', icon: User, label: 'Профиль', roles: ['owner', 'team_leader', 'admin', 'curator', 'hr', 'hr_huntme', 'hr_mason', 'scout'] },
   ];
 
   const filteredItems = navItems.filter(item => item.roles.some(r => user.roles.includes(r)));
@@ -81,6 +81,8 @@ export default function Sidebar() {
           >
             <NavLink
               to={item.to}
+              end={item.to === '/'}
+              onClick={onNavigate}
               className={({ isActive }) =>
                 `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200 ${
                   isActive

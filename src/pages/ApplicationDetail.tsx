@@ -122,8 +122,8 @@ export default function ApplicationDetail() {
     return [];
   })();
 
-  const canDirectApp = hasRole(user, 'owner', 'admin') && app.status === 'pending_review';
-  const canRejectPending = hasRole(user, 'owner', 'admin') && app.status === 'pending_review';
+  const canDirectApp = hasRole(user, 'owner', 'team_leader') && app.status === 'pending_review';
+  const canRejectPending = hasRole(user, 'owner', 'team_leader') && app.status === 'pending_review';
   const canChangeStatus = availableStatuses.length > 0 && app.status !== 'pending_review';
 
   const chatAccess = hasRole(user, 'owner') || [

@@ -126,7 +126,7 @@ router.get('/:squadId/teams', authMiddleware, (req, res) => {
   }
 });
 
-router.post('/:squadId/teams', authMiddleware, roleMiddleware('owner', 'admin'), (req, res) => {
+router.post('/:squadId/teams', authMiddleware, roleMiddleware('owner', 'team_leader'), (req, res) => {
   const { name, leader_id } = req.body;
   if (!name) return res.status(400).json({ error: 'Введите название команды' });
 
@@ -142,7 +142,7 @@ router.post('/:squadId/teams', authMiddleware, roleMiddleware('owner', 'admin'),
 });
 
 // Update team
-router.put('/teams/:teamId', authMiddleware, roleMiddleware('owner', 'admin'), (req, res) => {
+router.put('/teams/:teamId', authMiddleware, roleMiddleware('owner', 'team_leader'), (req, res) => {
   const { name, leader_id } = req.body;
   const db = getDb();
   try {
@@ -164,7 +164,7 @@ router.put('/teams/:teamId', authMiddleware, roleMiddleware('owner', 'admin'), (
 });
 
 // Delete team
-router.delete('/teams/:teamId', authMiddleware, roleMiddleware('owner', 'admin'), (req, res) => {
+router.delete('/teams/:teamId', authMiddleware, roleMiddleware('owner', 'team_leader'), (req, res) => {
   const db = getDb();
   try {
     db.prepare('UPDATE users SET team_id = NULL WHERE team_id = ?').run(req.params.teamId);
@@ -179,7 +179,7 @@ router.delete('/teams/:teamId', authMiddleware, roleMiddleware('owner', 'admin')
 });
 
 // Add member to team
-router.post('/teams/:teamId/members', authMiddleware, roleMiddleware('owner', 'admin'), (req, res) => {
+router.post('/teams/:teamId/members', authMiddleware, roleMiddleware('owner', 'team_leader'), (req, res) => {
   const { user_id } = req.body;
   if (!user_id) return res.status(400).json({ error: 'Укажите пользователя' });
 
@@ -199,7 +199,7 @@ router.post('/teams/:teamId/members', authMiddleware, roleMiddleware('owner', 'a
 });
 
 // Remove member from team
-router.delete('/teams/:teamId/members/:userId', authMiddleware, roleMiddleware('owner', 'admin'), (req, res) => {
+router.delete('/teams/:teamId/members/:userId', authMiddleware, roleMiddleware('owner', 'team_leader'), (req, res) => {
   const db = getDb();
   try {
     db.prepare('UPDATE users SET team_id = NULL, squad_id = NULL WHERE id = ? AND team_id = ?').run(req.params.userId, req.params.teamId);

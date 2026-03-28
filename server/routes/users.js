@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const { getDb } = require('../database');
 const { authMiddleware, roleMiddleware, userHasRole } = require('../middleware/auth');
 
-const VALID_ROLES = ['owner', 'admin', 'curator', 'hr', 'hr_huntme', 'hr_mason', 'scout'];
+const VALID_ROLES = ['owner', 'team_leader', 'admin', 'curator', 'hr', 'hr_huntme', 'hr_mason', 'scout'];
 
 const router = express.Router();
 
@@ -22,7 +22,7 @@ router.get('/', authMiddleware, (req, res) => {
         LEFT JOIN teams t ON u.team_id = t.id
         ORDER BY u.role, u.full_name
       `).all();
-    } else if (userHasRole(req.user, 'admin')) {
+    } else if (userHasRole(req.user, 'team_leader')) {
       const squad = db.prepare('SELECT id FROM squads WHERE admin_id = ?').get(req.user.id);
       if (!squad) return res.json([]);
       users = db.prepare(`

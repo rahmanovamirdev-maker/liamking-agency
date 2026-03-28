@@ -65,6 +65,8 @@ export default function Applications() {
     candidate_name: '', candidate_age: '', candidate_phone: '', candidate_telegram: '',
     intro_name: '', vacancy_title: '', languages: '', intro_role: '', candidate_info: '',
   });
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
 
   // Operator form
   const [operatorForm, setOperatorForm] = useState({
@@ -96,11 +98,26 @@ export default function Applications() {
   async function handleSubmitModel(e: React.FormEvent) {
     e.preventDefault();
     try {
-      await api.post('/applications', { ...modelForm, app_type: 'model' });
+      let candidate_photo: string | null = null;
+      if (photoFile) {
+        const formData = new FormData();
+        formData.append('photo', photoFile);
+        const res = await fetch('/api/upload', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+          body: formData,
+        });
+        if (!res.ok) { const err = await res.json(); throw new Error(err.error || 'Ошибка загрузки фото'); }
+        const data = await res.json();
+        candidate_photo = data.url;
+      }
+      await api.post('/applications', { ...modelForm, app_type: 'model', candidate_photo });
       toast.success('Анкета на модель создана!');
       setShowForm(false);
       setFormType('');
       setModelForm({ candidate_name: '', candidate_age: '', candidate_phone: '', candidate_telegram: '', intro_name: '', vacancy_title: '', languages: '', intro_role: '', candidate_info: '' });
+      setPhotoFile(null);
+      setPhotoPreview(null);
       loadApps();
     } catch (err: any) { toast.error(err.message); }
   }
@@ -204,7 +221,17 @@ export default function Applications() {
             <textarea value={modelForm.candidate_info} onChange={e => setModelForm({ ...modelForm, candidate_info: e.target.value })}
               className="input-field" rows={3} placeholder="Что рассказали, чего ожидает, что для неё важно..." />
           </div>
-          <p className="text-xs text-dark-500">10. Фото кандидатки загружается после создания анкеты</p>
+          <div>
+            <label className="block text-sm text-dark-300 mb-1">10. Фото кандидатки</label>
+            <input type="file" accept="image/jpeg,image/png,image/webp,image/gif"
+              onChange={e => {
+                const file = e.target.files?.[0] || null;
+                setPhotoFile(file);
+                setPhotoPreview(file ? URL.createObjectURL(file) : null);
+              }}
+              className="input-field text-sm file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:bg-primary-600 file:text-white file:text-sm file:cursor-pointer" />
+            {photoPreview && <img src={photoPreview} alt="Превью" className="mt-2 max-w-[200px] rounded-lg" />}
+          </div>
           <div className="flex gap-3">
             <button type="submit" className="btn-primary">Отправить анкету</button>
             <button type="button" onClick={() => { setFormType(''); }} className="btn-secondary">Назад</button>

@@ -7,7 +7,8 @@ import { Send, Paperclip, FileText, Image, X, Download, MessageSquare } from 'lu
 
 const roleColors: Record<string, string> = {
   owner: 'text-amber-400',
-  admin: 'text-blue-400',
+  team_leader: 'text-blue-400',
+  admin: 'text-sky-400',
   curator: 'text-purple-400',
   hr: 'text-emerald-400',
   scout: 'text-primary-400',
@@ -15,6 +16,7 @@ const roleColors: Record<string, string> = {
 
 const roleLabels: Record<string, string> = {
   owner: 'Владелец',
+  team_leader: 'Сквад Лидер',
   admin: 'Админ',
   curator: 'Куратор',
   hr: 'HR',

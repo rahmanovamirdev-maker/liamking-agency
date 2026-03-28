@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import { Shield, Users, UserPlus, FileText, Activity, Plus, Edit3, Trash2, Wallet } from 'lucide-react';
 
 const roleLabels: Record<string, string> = {
-  owner: 'Владелец', admin: 'Админ', curator: 'Куратор', hr: 'HR Менеджер', hr_huntme: 'HR HuntMe', hr_mason: 'HR Mason', scout: 'Скаут',
+  owner: 'Владелец', team_leader: 'Сквад Лидер', admin: 'Админ', curator: 'Куратор', hr: 'HR Менеджер', hr_huntme: 'HR HuntMe', hr_mason: 'HR Mason', scout: 'Скаут',
 };
 
 export default function AdminPanel() {
@@ -215,7 +215,7 @@ export default function AdminPanel() {
                   className="input-field" placeholder="Название сквада" required />
                 <select value={squadForm.admin_id} onChange={e => setSquadForm({ ...squadForm, admin_id: e.target.value })} className="input-field">
                   <option value="">Без Team Leader</option>
-                  {users.filter(u => u.role.includes('admin')).map(u => <option key={u.id} value={u.id}>{u.full_name}</option>)}
+                  {users.filter(u => u.role.includes('team_leader')).map(u => <option key={u.id} value={u.id}>{u.full_name}</option>)}
                 </select>
               </div>
               <div className="flex gap-2">
@@ -322,7 +322,7 @@ function EditUserModal({ user, squads, onSave, onClose }: any) {
           <div>
             <p className="text-sm text-dark-300 mb-2">Роли</p>
             <div className="flex flex-wrap gap-2">
-              {(['owner', 'admin', 'curator', 'hr', 'hr_huntme', 'hr_mason', 'scout'] as const).map(key => (
+              {(['owner', 'team_leader', 'admin', 'curator', 'hr', 'hr_huntme', 'hr_mason', 'scout'] as const).map(key => (
                 <label key={key} className="flex items-center gap-1.5 text-sm text-dark-300 cursor-pointer">
                   <input type="checkbox" checked={form.roles.includes(key)}
                     onChange={e => {

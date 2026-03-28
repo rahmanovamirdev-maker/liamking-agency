@@ -50,7 +50,7 @@ router.get('/', authMiddleware, (req, res) => {
     const userRoles = req.user.role.split(',');
     if (userHasRole(req.user, 'owner')) {
       // owner sees all
-    } else if (userHasRole(req.user, 'admin')) {
+    } else if (userHasRole(req.user, 'team_leader')) {
       const squad = db.prepare('SELECT id FROM squads WHERE admin_id = ?').get(req.user.id);
       if (squad) {
         conditions.push('a.squad_id = ?');
@@ -58,6 +58,18 @@ router.get('/', authMiddleware, (req, res) => {
       } else {
         conditions.push('a.admin_id = ?');
         params.push(req.user.id);
+      }
+    } else if (userHasRole(req.user, 'admin')) {
+      // New admin role: sees only their team's scouts' applications
+      const teamScouts = db.prepare(
+        'SELECT id FROM users WHERE team_id = ? AND role LIKE ?'
+      ).all(req.user.team_id, '%scout%');
+      const scoutIds = teamScouts.map(s => s.id);
+      if (scoutIds.length > 0) {
+        conditions.push('a.scout_id IN (' + scoutIds.map(() => '?').join(',') + ')');
+        params.push(...scoutIds);
+      } else {
+        conditions.push('1=0');
       }
     } else if (userHasRole(req.user, 'hr_huntme') || userHasRole(req.user, 'hr_mason')) {
       const roleConds = [];
@@ -244,7 +256,7 @@ router.post('/', authMiddleware, (req, res) => {
 
 // Direct application to partner (admin sets direction: huntme or mason)
 router.put('/:id/direction', authMiddleware, (req, res) => {
-  if (!userHasRole(req.user, 'owner', 'admin')) {
+  if (!userHasRole(req.user, 'owner', 'team_leader')) {
     return res.status(403).json({ error: 'Недостаточно прав' });
   }
 
@@ -295,7 +307,7 @@ router.put('/:id/status', authMiddleware, (req, res) => {
     // Owner can do anything
     if (userHasRole(req.user, 'owner')) {
       // allowed
-    } else if (userHasRole(req.user, 'admin')) {
+    } else if (userHasRole(req.user, 'team_leader')) {
       if (app.status === 'pending_review' && status === 'rejected') {
         // allowed
       } else {

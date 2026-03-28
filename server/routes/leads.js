@@ -19,7 +19,7 @@ router.get('/', authMiddleware, (req, res) => {
     const conditions = [];
     const params = [];
 
-    if (userHasRole(req.user, 'scout') && !userHasRole(req.user, 'owner', 'admin')) {
+    if (userHasRole(req.user, 'scout') && !userHasRole(req.user, 'owner', 'team_leader')) {
       conditions.push('l.scout_id = ?');
       params.push(req.user.id);
     } else if (pool === '1') {
@@ -181,7 +181,7 @@ router.put('/:id', authMiddleware, (req, res) => {
     if (!lead) return res.status(404).json({ error: 'Лид не найден' });
 
     // Scout can only update own leads
-    if (userHasRole(req.user, 'scout') && !userHasRole(req.user, 'owner', 'admin') && lead.scout_id !== req.user.id) {
+    if (userHasRole(req.user, 'scout') && !userHasRole(req.user, 'owner', 'team_leader') && lead.scout_id !== req.user.id) {
       return res.status(403).json({ error: 'Нет доступа' });
     }
 
@@ -230,10 +230,10 @@ router.get('/requests', authMiddleware, (req, res) => {
     const conditions = [];
     const params = [];
 
-    if (userHasRole(req.user, 'scout') && !userHasRole(req.user, 'owner', 'admin')) {
+    if (userHasRole(req.user, 'scout') && !userHasRole(req.user, 'owner', 'team_leader')) {
       conditions.push('lr.scout_id = ?');
       params.push(req.user.id);
-    } else if (userHasRole(req.user, 'admin') && !userHasRole(req.user, 'owner')) {
+    } else if (userHasRole(req.user, 'team_leader') && !userHasRole(req.user, 'owner')) {
       conditions.push('lr.admin_id = ?');
       params.push(req.user.id);
     }
@@ -301,7 +301,7 @@ router.post('/requests', authMiddleware, (req, res) => {
 
 // Admin resolves a lead request (approve/reject)
 router.put('/requests/:id', authMiddleware, (req, res) => {
-  if (!userHasRole(req.user, 'admin', 'owner')) {
+  if (!userHasRole(req.user, 'team_leader', 'owner')) {
     return res.status(403).json({ error: 'Недостаточно прав' });
   }
 
@@ -317,7 +317,7 @@ router.put('/requests/:id', authMiddleware, (req, res) => {
     if (request.status !== 'pending') return res.status(400).json({ error: 'Заявка уже обработана' });
 
     // Check admin is the right one
-    if (userHasRole(req.user, 'admin') && !userHasRole(req.user, 'owner') && request.admin_id !== req.user.id) {
+    if (userHasRole(req.user, 'team_leader') && !userHasRole(req.user, 'owner') && request.admin_id !== req.user.id) {
       return res.status(403).json({ error: 'Нет доступа к этой заявке' });
     }
 
@@ -382,7 +382,7 @@ router.put('/requests/:id', authMiddleware, (req, res) => {
 
 // Get scouts list with lead stats (for admin)
 router.get('/scouts', authMiddleware, (req, res) => {
-  if (!userHasRole(req.user, 'admin', 'owner')) {
+  if (!userHasRole(req.user, 'team_leader', 'owner')) {
     return res.status(403).json({ error: 'Недостаточно прав' });
   }
 
@@ -391,7 +391,7 @@ router.get('/scouts', authMiddleware, (req, res) => {
     let scoutsQuery;
     const params = [];
 
-    if (userHasRole(req.user, 'admin') && !userHasRole(req.user, 'owner')) {
+    if (userHasRole(req.user, 'team_leader') && !userHasRole(req.user, 'owner')) {
       // Get scouts in admin's squad
       const squad = db.prepare('SELECT id FROM squads WHERE admin_id = ?').get(req.user.id);
       if (!squad) return res.json([]);
@@ -436,7 +436,7 @@ router.get('/scouts', authMiddleware, (req, res) => {
 
 // Get leads for a specific scout (admin report)
 router.get('/scouts/:scoutId', authMiddleware, (req, res) => {
-  if (!userHasRole(req.user, 'admin', 'owner')) {
+  if (!userHasRole(req.user, 'team_leader', 'owner')) {
     return res.status(403).json({ error: 'Недостаточно прав' });
   }
 

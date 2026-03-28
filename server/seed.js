@@ -16,8 +16,8 @@ async function seed() {
   // --- Пользователи ---
   const users = [
     // Админы скводов
-    { id: 2, username: 'admin1', pw: 'admin123', name: 'Алексей Смирнов', role: 'admin', squad: 1 },
-    { id: 3, username: 'admin2', pw: 'admin123', name: 'Дмитрий Козлов', role: 'admin', squad: 2 },
+    { id: 2, username: 'admin1', pw: 'admin123', name: 'Алексей Смирнов', role: 'team_leader', squad: 1 },
+    { id: 3, username: 'admin2', pw: 'admin123', name: 'Дмитрий Козлов', role: 'team_leader', squad: 2 },
     // Кураторы
     { id: 4, username: 'curator1', pw: 'admin123', name: 'Ольга Петрова', role: 'curator', squad: 1 },
     { id: 5, username: 'curator2', pw: 'admin123', name: 'Наталья Волкова', role: 'curator', squad: 2 },

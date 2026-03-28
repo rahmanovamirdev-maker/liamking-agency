@@ -28,16 +28,16 @@ export default function App() {
         <Route path="teams" element={<Teams />} />
         <Route path="statistics" element={<Statistics />} />
         <Route path="huntme" element={
-          <ProtectedRoute roles={['owner', 'admin', 'hr_huntme']}><HuntMe /></ProtectedRoute>
+          <ProtectedRoute roles={['owner', 'team_leader', 'hr_huntme']}><HuntMe /></ProtectedRoute>
         } />
         <Route path="mason" element={
-          <ProtectedRoute roles={['owner', 'admin', 'hr_mason']}><Mason /></ProtectedRoute>
+          <ProtectedRoute roles={['owner', 'team_leader', 'hr_mason']}><Mason /></ProtectedRoute>
         } />
         <Route path="leads" element={
-          <ProtectedRoute roles={['owner', 'admin', 'scout']}><Leads /></ProtectedRoute>
+          <ProtectedRoute roles={['owner', 'team_leader', 'scout']}><Leads /></ProtectedRoute>
         } />
         <Route path="archive" element={
-          <ProtectedRoute roles={['owner', 'admin', 'curator', 'hr', 'hr_huntme', 'hr_mason']}><Archive /></ProtectedRoute>
+          <ProtectedRoute roles={['owner', 'team_leader', 'curator', 'hr', 'hr_huntme', 'hr_mason']}><Archive /></ProtectedRoute>
         } />
         <Route path="notifications" element={<Notifications />} />
         <Route path="profile" element={<Profile />} />
