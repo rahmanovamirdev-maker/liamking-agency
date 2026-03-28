@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { api } from '../api/client';
 import { useAuth, hasRole } from '../contexts/AuthContext';
@@ -35,6 +35,16 @@ export default function Teams() {
   const [selectedUserId, setSelectedUserId] = useState('');
 
   const [confirmDelete, setConfirmDelete] = useState<{ type: string; id: number; name: string } | null>(null);
+
+  // IDs of users already assigned as squad TL or team leader
+  const assignedLeaderIds = useMemo(() => {
+    const ids = new Set<number>();
+    squads.forEach(s => {
+      if (s.admin_id) ids.add(s.admin_id);
+      s.teams?.forEach((t: any) => { if (t.leader_id) ids.add(t.leader_id); });
+    });
+    return ids;
+  }, [squads]);
 
   useEffect(() => { loadData(); }, []);
 
@@ -182,7 +192,7 @@ export default function Teams() {
               className="input-field" placeholder="Название сквада" required />
             <select value={squadForm.admin_id} onChange={e => setSquadForm({ ...squadForm, admin_id: e.target.value })} className="input-field">
               <option value="">Без Team Leader</option>
-              {allUsers.filter(u => u.role.includes('team_leader')).map(u => <option key={u.id} value={u.id}>{u.full_name}</option>)}
+              {allUsers.filter(u => u.role.includes('team_leader') && !assignedLeaderIds.has(u.id)).map(u => <option key={u.id} value={u.id}>{u.full_name}</option>)}
             </select>
           </div>
           <div className="flex gap-2">
@@ -207,7 +217,7 @@ export default function Teams() {
                       className="input-field" placeholder="Название" />
                     <select value={editSquadForm.admin_id} onChange={e => setEditSquadForm({ ...editSquadForm, admin_id: e.target.value })} className="input-field">
                       <option value="">Без Team Leader</option>
-                      {allUsers.filter(u => u.role.includes('team_leader')).map(u => <option key={u.id} value={u.id}>{u.full_name}</option>)}
+                      {allUsers.filter(u => u.role.includes('team_leader') && (!assignedLeaderIds.has(u.id) || u.id.toString() === editSquadForm.admin_id)).map(u => <option key={u.id} value={u.id}>{u.full_name}</option>)}
                     </select>
                   </div>
                   <div className="flex gap-2">
@@ -257,7 +267,7 @@ export default function Teams() {
                             className="flex-1 min-w-0 px-3 py-2 bg-dark-800 border border-dark-500 rounded-lg text-white placeholder-dark-400 focus:outline-none focus:border-primary-500 text-sm" placeholder="Название команды" required />
                           <select value={teamForm.leader_id} onChange={e => setTeamForm({ ...teamForm, leader_id: e.target.value })} className="flex-1 min-w-0 px-3 py-2 bg-dark-800 border border-dark-500 rounded-lg text-white text-sm focus:outline-none focus:border-primary-500">
                             <option value="">Без лидера</option>
-                            {allUsers.filter(u => u.role.includes('curator') || u.role.includes('admin') || u.role.includes('team_leader')).map(u => <option key={u.id} value={u.id}>{u.full_name}</option>)}
+                            {allUsers.filter(u => (u.role.includes('curator') || u.role.includes('admin') || u.role.includes('team_leader')) && !assignedLeaderIds.has(u.id)).map(u => <option key={u.id} value={u.id}>{u.full_name}</option>)}
                           </select>
                           <button type="submit" className="btn-primary text-sm whitespace-nowrap">Создать</button>
                           <button type="button" onClick={() => setCreatingTeamForSquad(null)} className="btn-secondary text-sm">✕</button>
@@ -284,7 +294,7 @@ export default function Teams() {
                                 className="input-field flex-1" placeholder="Название" />
                               <select value={editTeamForm.leader_id} onChange={e => setEditTeamForm({ ...editTeamForm, leader_id: e.target.value })} className="input-field">
                                 <option value="">Без лидера</option>
-                                {allUsers.filter(u => u.role.includes('curator') || u.role.includes('admin') || u.role.includes('team_leader')).map(u => <option key={u.id} value={u.id}>{u.full_name}</option>)}
+                                {allUsers.filter(u => (u.role.includes('curator') || u.role.includes('admin') || u.role.includes('team_leader')) && (!assignedLeaderIds.has(u.id) || u.id.toString() === editTeamForm.leader_id)).map(u => <option key={u.id} value={u.id}>{u.full_name}</option>)}
                               </select>
                               <button onClick={() => updateTeam(team.id)} className="btn-primary text-sm">Ок</button>
                               <button onClick={() => setEditingTeam(null)} className="btn-secondary text-sm">✕</button>
