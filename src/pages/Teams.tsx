@@ -254,8 +254,8 @@ export default function Teams() {
                       {creatingTeamForSquad === squad.id ? (
                         <form onSubmit={(e) => createTeam(squad.id, e)} className="flex items-center gap-2 mb-3">
                           <input value={teamForm.name} onChange={e => setTeamForm({ ...teamForm, name: e.target.value })}
-                            className="input-field flex-1" placeholder="Название команды" required />
-                          <select value={teamForm.leader_id} onChange={e => setTeamForm({ ...teamForm, leader_id: e.target.value })} className="input-field">
+                            className="flex-1 min-w-0 px-3 py-2 bg-dark-800 border border-dark-500 rounded-lg text-white placeholder-dark-400 focus:outline-none focus:border-primary-500 text-sm" placeholder="Название команды" required />
+                          <select value={teamForm.leader_id} onChange={e => setTeamForm({ ...teamForm, leader_id: e.target.value })} className="flex-1 min-w-0 px-3 py-2 bg-dark-800 border border-dark-500 rounded-lg text-white text-sm focus:outline-none focus:border-primary-500">
                             <option value="">Без лидера</option>
                             {allUsers.filter(u => u.role.includes('curator') || u.role.includes('admin') || u.role.includes('team_leader')).map(u => <option key={u.id} value={u.id}>{u.full_name}</option>)}
                           </select>
