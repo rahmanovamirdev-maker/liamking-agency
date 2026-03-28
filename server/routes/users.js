@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const { getDb } = require('../database');
 const { authMiddleware, roleMiddleware, userHasRole } = require('../middleware/auth');
 
-const VALID_ROLES = ['owner', 'admin', 'curator', 'hr', 'scout'];
+const VALID_ROLES = ['owner', 'admin', 'curator', 'hr', 'hr_huntme', 'hr_mason', 'scout'];
 
 const router = express.Router();
 
