@@ -181,6 +181,7 @@ export default function ApplicationDetail() {
                   <InfoRow icon={Briefcase} label="Вакансия" value={app.vacancy_title || '—'} />
                   <InfoRow icon={Languages} label="Языки" value={app.languages || '—'} />
                   <InfoRow icon={Globe} label="Должность/роль" value={app.intro_role || '—'} />
+                  <InfoRow icon={Globe} label="Nude / No-Nude" value={app.nude_type || '—'} />
                 </div>
                 {app.candidate_info && (
                   <div className="p-3 bg-dark-800 rounded-lg">

@@ -232,14 +232,14 @@ router.post('/', authMiddleware, (req, res) => {
 
     let appId;
     if (app_type === 'model') {
-      const { intro_name, vacancy_title, languages, intro_role, candidate_info, candidate_photo } = req.body;
+      const { intro_name, vacancy_title, languages, intro_role, candidate_info, nude_type, candidate_photo } = req.body;
       const result = db.prepare(`
         INSERT INTO applications (app_type, candidate_name, candidate_age, candidate_phone, candidate_telegram,
-          intro_name, vacancy_title, languages, intro_role, candidate_info, candidate_photo, scout_id, squad_id, status)
-        VALUES ('model', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending_review')
+          intro_name, vacancy_title, languages, intro_role, candidate_info, nude_type, candidate_photo, scout_id, squad_id, status)
+        VALUES ('model', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending_review')
       `).run(candidate_name, candidate_age || '', candidate_phone || '', candidate_telegram || '',
         intro_name || '', vacancy_title || '', languages || '', intro_role || '',
-        candidate_info || '', candidate_photo || null, req.user.id, squadId);
+        candidate_info || '', nude_type || '', candidate_photo || null, req.user.id, squadId);
       appId = result.lastInsertRowid;
     } else {
       const { company_name, english_level, work_experience, pc_specs } = req.body;

@@ -63,7 +63,7 @@ export default function Applications() {
   // Model form
   const [modelForm, setModelForm] = useState({
     candidate_name: '', candidate_age: '', candidate_phone: '', candidate_telegram: '',
-    intro_name: '', vacancy_title: '', languages: '', intro_role: '', candidate_info: '',
+    intro_name: '', vacancy_title: '', languages: '', intro_role: '', candidate_info: '', nude_type: '',
   });
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
@@ -109,7 +109,7 @@ export default function Applications() {
       toast.success('Анкета на модель создана!');
       setShowForm(false);
       setFormType('');
-      setModelForm({ candidate_name: '', candidate_age: '', candidate_phone: '', candidate_telegram: '', intro_name: '', vacancy_title: '', languages: '', intro_role: '', candidate_info: '' });
+      setModelForm({ candidate_name: '', candidate_age: '', candidate_phone: '', candidate_telegram: '', intro_name: '', vacancy_title: '', languages: '', intro_role: '', candidate_info: '', nude_type: '' });
       setPhotoFile(null);
       setPhotoPreview(null);
       loadApps();
@@ -211,12 +211,21 @@ export default function Applications() {
             </div>
           </div>
           <div>
-            <label className="block text-sm text-dark-300 mb-1">9. Краткое описание</label>
+            <label className="block text-sm text-dark-300 mb-1">9. Nude / No-Nude</label>
+            <select value={modelForm.nude_type} onChange={e => setModelForm({ ...modelForm, nude_type: e.target.value })}
+              className="input-field">
+              <option value="">Выберите...</option>
+              <option value="Nude">Nude</option>
+              <option value="No-Nude">No-Nude</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm text-dark-300 mb-1">10. Краткое описание</label>
             <textarea value={modelForm.candidate_info} onChange={e => setModelForm({ ...modelForm, candidate_info: e.target.value })}
               className="input-field" rows={3} placeholder="Что рассказали, чего ожидает, что для неё важно..." />
           </div>
           <div>
-            <label className="block text-sm text-dark-300 mb-1">10. Фото кандидатки</label>
+            <label className="block text-sm text-dark-300 mb-1">11. Фото кандидатки</label>
             <input type="file" accept="image/jpeg,image/png,image/webp,image/gif"
               onChange={e => {
                 const file = e.target.files?.[0] || null;

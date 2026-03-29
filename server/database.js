@@ -170,6 +170,7 @@ async function initDatabase() {
       languages TEXT DEFAULT '',
       intro_role TEXT DEFAULT '',
       candidate_info TEXT DEFAULT '',
+      nude_type TEXT DEFAULT '',
       candidate_photo TEXT DEFAULT NULL,
       -- operator fields
       company_name TEXT DEFAULT '',
@@ -193,6 +194,13 @@ async function initDatabase() {
       FOREIGN KEY (squad_id) REFERENCES squads(id)
     )
   `);
+
+  // Migration: add nude_type column if missing
+  try {
+    _db.exec(`ALTER TABLE applications ADD COLUMN nude_type TEXT DEFAULT ''`);
+  } catch (e) {
+    // Column already exists
+  }
 
   _db.exec(`
     CREATE TABLE IF NOT EXISTS application_history (
