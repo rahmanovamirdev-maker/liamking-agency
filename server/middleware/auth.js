@@ -31,12 +31,14 @@ function authMiddleware(req, res, next) {
     // Refresh role and check is_active from DB
     const { getDb } = require('../database');
     const db = getDb();
-    const freshUser = db.prepare('SELECT role, is_active, full_name FROM users WHERE id = ?').get(decoded.id);
+    const freshUser = db.prepare('SELECT role, is_active, full_name, squad_id, team_id FROM users WHERE id = ?').get(decoded.id);
     if (!freshUser || !freshUser.is_active) {
       return res.status(401).json({ error: 'Аккаунт деактивирован' });
     }
     decoded.role = freshUser.role;
     decoded.full_name = freshUser.full_name;
+    decoded.squad_id = freshUser.squad_id || null;
+    decoded.team_id = freshUser.team_id || null;
     req.user = decoded;
     next();
   } catch {
