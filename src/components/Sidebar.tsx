@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import {
   Home, FileText, Users, BarChart3, Archive, Database,
-  Bell, User, Shield, UserCheck, LogOut, Zap, Gem
+  Bell, User, Shield, UserCheck, LogOut, Zap, Gem, UsersRound
 } from 'lucide-react';
 
 const roleLabels: Record<string, string> = {
@@ -25,6 +25,7 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
     { to: '/applications', icon: FileText, label: 'Анкеты', roles: ['owner', 'team_leader', 'admin', 'curator', 'hr', 'hr_huntme', 'hr_mason', 'scout'] },
     { to: '/teams', icon: Users, label: 'Команды', roles: ['owner', 'team_leader', 'admin', 'curator', 'hr', 'hr_huntme', 'hr_mason', 'scout'] },
     { to: '/statistics', icon: BarChart3, label: 'Статистика', roles: ['owner', 'team_leader', 'admin', 'curator', 'hr', 'hr_huntme', 'hr_mason', 'scout'] },
+    { to: '/my-team', icon: UsersRound, label: 'Моя команда', roles: ['owner', 'team_leader'] },
     { to: '/huntme', icon: Zap, label: 'HuntMe', roles: ['owner', 'team_leader', 'hr_huntme'] },
     { to: '/mason', icon: Gem, label: 'Mason', roles: ['owner', 'team_leader', 'hr_mason'] },
     { to: '/leads', icon: Database, label: 'БД Лидов', roles: ['owner', 'team_leader', 'scout'] },

@@ -16,6 +16,7 @@ import CuratorPanel from './pages/CuratorPanel';
 import HuntMe from './pages/HuntMe';
 import Mason from './pages/Mason';
 import PostDetail from './pages/PostDetail';
+import MyTeam from './pages/MyTeam';
 
 export default function App() {
   return (
@@ -27,6 +28,9 @@ export default function App() {
         <Route path="applications/:id" element={<ApplicationDetail />} />
         <Route path="teams" element={<Teams />} />
         <Route path="statistics" element={<Statistics />} />
+        <Route path="my-team" element={
+          <ProtectedRoute roles={['owner', 'team_leader']}><MyTeam /></ProtectedRoute>
+        } />
         <Route path="huntme" element={
           <ProtectedRoute roles={['owner', 'team_leader', 'hr_huntme']}><HuntMe /></ProtectedRoute>
         } />
