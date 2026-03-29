@@ -52,8 +52,10 @@ router.put('/read-all', authMiddleware, (req, res) => {
 router.put('/:id/read', authMiddleware, (req, res) => {
   const db = getDb();
   try {
+    const nid = parseInt(req.params.id);
+    if (isNaN(nid)) return res.status(400).json({ error: 'Некорректный ID' });
     db.prepare('UPDATE notifications SET is_read = 1 WHERE id = ? AND user_id = ?')
-      .run(parseInt(req.params.id), req.user.id);
+      .run(nid, req.user.id);
     saveDatabase();
     res.json({ message: 'Прочитано' });
   } catch (err) {

@@ -111,6 +111,7 @@ router.get('/personal/:userId', authMiddleware, (req, res) => {
   const db = getDb();
   try {
     const userId = req.params.userId === 'me' ? req.user.id : parseInt(req.params.userId);
+    if (isNaN(userId)) return res.status(400).json({ error: 'Некорректный ID' });
 
     const total = db.prepare('SELECT COUNT(*) as count FROM applications WHERE scout_id = ?').get(userId).count;
     const byStatus = db.prepare(`

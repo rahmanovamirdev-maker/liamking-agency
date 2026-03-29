@@ -65,6 +65,7 @@ function checkChatAccess(db, applicationId, userId, userRole) {
 router.get('/:applicationId', authMiddleware, (req, res) => {
   const db = getDb();
   const applicationId = parseInt(req.params.applicationId);
+  if (isNaN(applicationId)) return res.status(400).json({ error: 'Некорректный ID' });
   try {
     if (!checkChatAccess(db, applicationId, req.user.id, req.user.role)) {
       return res.status(403).json({ error: 'Нет доступа к этому чату' });
@@ -89,6 +90,7 @@ router.get('/:applicationId', authMiddleware, (req, res) => {
 router.post('/:applicationId', authMiddleware, (req, res) => {
   const db = getDb();
   const applicationId = parseInt(req.params.applicationId);
+  if (isNaN(applicationId)) return res.status(400).json({ error: 'Некорректный ID' });
   const { message } = req.body;
 
   if (!message || !message.trim()) {
@@ -119,6 +121,7 @@ router.post('/:applicationId', authMiddleware, (req, res) => {
 router.post('/:applicationId/upload', authMiddleware, (req, res) => {
   const db = getDb();
   const applicationId = parseInt(req.params.applicationId);
+  if (isNaN(applicationId)) return res.status(400).json({ error: 'Некорректный ID' });
 
   if (!checkChatAccess(db, applicationId, req.user.id, req.user.role)) {
     return res.status(403).json({ error: 'Нет доступа к этому чату' });

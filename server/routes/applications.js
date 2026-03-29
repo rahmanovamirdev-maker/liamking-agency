@@ -132,9 +132,11 @@ router.get('/', authMiddleware, (req, res) => {
     }
 
     query += ' ORDER BY a.updated_at DESC';
-    const offset = (parseInt(page) - 1) * parseInt(limit);
+    const parsedPage = parseInt(page) || 1;
+    const parsedLimit = parseInt(limit) || 50;
+    const offset = (parsedPage - 1) * parsedLimit;
     query += ` LIMIT ? OFFSET ?`;
-    params.push(parseInt(limit), offset);
+    params.push(parsedLimit, offset);
 
     const applications = db.prepare(query).all(...params);
 

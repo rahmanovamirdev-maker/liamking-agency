@@ -14,15 +14,17 @@ class DbWrapper {
 
   prepare(sql) {
     const db = this._db;
+    // Sanitize params: convert undefined to null to prevent sql.js errors
+    const sanitize = (params) => params.map(p => p === undefined ? null : p);
     return {
       run(...params) {
-        db.run(sql, params);
+        db.run(sql, sanitize(params));
         return { lastInsertRowid: db.exec("SELECT last_insert_rowid()")[0]?.values[0]?.[0] || 0, changes: db.getRowsModified() };
       },
       get(...params) {
         const stmt = db.prepare(sql);
         try {
-          if (params.length) stmt.bind(params);
+          if (params.length) stmt.bind(sanitize(params));
           if (stmt.step()) {
             const cols = stmt.getColumnNames();
             const vals = stmt.get();
@@ -41,7 +43,7 @@ class DbWrapper {
       all(...params) {
         const stmt = db.prepare(sql);
         try {
-          if (params.length) stmt.bind(params);
+          if (params.length) stmt.bind(sanitize(params));
           const results = [];
           const cols = stmt.getColumnNames();
           while (stmt.step()) {

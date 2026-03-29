@@ -26,16 +26,22 @@ router.get('/', authMiddleware, (req, res) => {
       // Show only unassigned pool
       conditions.push("l.status = 'new' AND l.scout_id IS NULL");
     } else if (scout_id) {
-      conditions.push('l.scout_id = ?');
-      params.push(parseInt(scout_id));
+      const sid = parseInt(scout_id);
+      if (!isNaN(sid)) {
+        conditions.push('l.scout_id = ?');
+        params.push(sid);
+      }
     }
 
     // Filter by touch count
     if (touch === 'trash') {
       conditions.push('l.touch_count > 4');
     } else if (touch) {
-      conditions.push('l.touch_count = ?');
-      params.push(parseInt(touch));
+      const t = parseInt(touch);
+      if (!isNaN(t)) {
+        conditions.push('l.touch_count = ?');
+        params.push(t);
+      }
     }
 
     if (status) { conditions.push('l.status = ?'); params.push(status); }
