@@ -135,12 +135,13 @@ router.get('/my-team', authMiddleware, (req, res) => {
   const db = getDb();
   try {
     const { period, squadId } = req.query;
-    // owner can pass squadId, team_leader uses their own squad
+    // owner can pass squadId, team_leader uses their own squad from DB
     let targetSquadId;
     if (userHasRole(req.user, 'owner') && squadId) {
       targetSquadId = parseInt(squadId);
     } else {
-      targetSquadId = req.user.squad_id;
+      const currentUser = db.prepare('SELECT squad_id FROM users WHERE id = ?').get(req.user.id);
+      targetSquadId = currentUser?.squad_id;
     }
     if (!targetSquadId) return res.json({ squad: null, teams: [], scouts: [], summary: null });
 
