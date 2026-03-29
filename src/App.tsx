@@ -17,6 +17,7 @@ import HuntMe from './pages/HuntMe';
 import Mason from './pages/Mason';
 import PostDetail from './pages/PostDetail';
 import MyTeam from './pages/MyTeam';
+import Achievements from './pages/Achievements';
 
 export default function App() {
   return (
@@ -43,6 +44,7 @@ export default function App() {
         <Route path="archive" element={
           <ProtectedRoute roles={['owner', 'team_leader', 'curator', 'hr', 'hr_huntme', 'hr_mason']}><Archive /></ProtectedRoute>
         } />
+        <Route path="achievements" element={<Achievements />} />
         <Route path="notifications" element={<Notifications />} />
         <Route path="profile" element={<Profile />} />
         <Route path="admin-panel" element={
