@@ -28,13 +28,15 @@ function authMiddleware(req, res, next) {
   const token = authHeader.split(' ')[1];
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    // Refresh role from DB to prevent stale JWT issues
+    // Refresh role and check is_active from DB
     const { getDb } = require('../database');
     const db = getDb();
-    const freshUser = db.prepare('SELECT role FROM users WHERE id = ?').get(decoded.id);
-    if (freshUser) {
-      decoded.role = freshUser.role;
+    const freshUser = db.prepare('SELECT role, is_active, full_name FROM users WHERE id = ?').get(decoded.id);
+    if (!freshUser || !freshUser.is_active) {
+      return res.status(401).json({ error: 'Аккаунт деактивирован' });
     }
+    decoded.role = freshUser.role;
+    decoded.full_name = freshUser.full_name;
     req.user = decoded;
     next();
   } catch {

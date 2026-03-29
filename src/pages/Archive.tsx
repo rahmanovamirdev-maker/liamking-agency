@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth, hasRole } from '../contexts/AuthContext';
 import { api } from '../api/client';
 import { Archive as ArchiveIcon, Search, ChevronRight, Trash2 } from 'lucide-react';
 
@@ -37,6 +38,7 @@ function getStatusLabel(status: string, appType?: string): string {
 }
 
 export default function Archive() {
+  const { user } = useAuth();
   const [apps, setApps] = useState<any[]>([]);
   const [search, setSearch] = useState('');
   const [total, setTotal] = useState(0);
@@ -124,9 +126,11 @@ export default function Archive() {
                         <Link to={`/applications/${app.id}`} className="text-primary-400 hover:text-primary-300">
                           <ChevronRight size={16} />
                         </Link>
-                        <button onClick={() => deleteApp(app.id, app.candidate_name)} className="text-red-500/60 hover:text-red-400 transition">
-                          <Trash2 size={15} />
-                        </button>
+                        {hasRole(user, 'owner') && (
+                          <button onClick={() => deleteApp(app.id, app.candidate_name)} className="text-red-500/60 hover:text-red-400 transition">
+                            <Trash2 size={15} />
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>

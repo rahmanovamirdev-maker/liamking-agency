@@ -58,15 +58,24 @@ export default function ApplicationChat({ applicationId, hasAccess }: Applicatio
   useEffect(() => {
     if (isOpen && hasAccess) {
       loadMessages();
-      pollRef.current = setInterval(loadMessages, 5000);
+      // Polling with visibility check — stop when tab is inactive
+      const poll = () => {
+        if (!document.hidden) loadMessages();
+      };
+      pollRef.current = setInterval(poll, 5000);
     }
     return () => {
       if (pollRef.current) clearInterval(pollRef.current);
     };
   }, [isOpen, applicationId, hasAccess]);
 
+  const prevMessageCount = useRef(0);
   useEffect(() => {
-    scrollToBottom();
+    // Only auto-scroll when new messages arrive
+    if (messages.length > prevMessageCount.current) {
+      scrollToBottom();
+    }
+    prevMessageCount.current = messages.length;
   }, [messages]);
 
   function scrollToBottom() {

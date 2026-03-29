@@ -204,7 +204,7 @@ router.put('/:id', authMiddleware, (req, res) => {
       return res.json({ message: `Касание ${newTouchCount} записано, лид возвращён в пул` });
     }
 
-    db.prepare('UPDATE leads SET status = ? WHERE id = ?').run(status, req.params.id);
+    db.prepare('UPDATE leads SET status = ?, assigned_at = CURRENT_TIMESTAMP WHERE id = ?').run(status, req.params.id);
     saveDatabase();
     res.json({ message: 'Статус обновлён' });
   } catch (err) {

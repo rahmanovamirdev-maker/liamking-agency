@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { api } from '../api/client';
 import toast from 'react-hot-toast';
 import { Eye, MessageSquare, Pin, ArrowLeft, Send } from 'lucide-react';
 
 export default function PostDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [post, setPost] = useState<any>(null);
   const [comment, setComment] = useState('');
 
@@ -33,9 +34,9 @@ export default function PostDetail() {
 
   return (
     <div className="space-y-6 max-w-3xl mx-auto">
-      <Link to="/" className="flex items-center gap-2 text-dark-400 hover:text-white transition">
+      <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-dark-400 hover:text-white transition">
         <ArrowLeft size={18} /> Назад
-      </Link>
+      </button>
 
       <article className="card">
         <div className="flex items-center gap-2 mb-2">

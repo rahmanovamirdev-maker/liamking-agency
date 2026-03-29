@@ -4,7 +4,7 @@ import { api } from '../api/client';
 import { Briefcase, ChevronRight } from 'lucide-react';
 
 const statusLabels: Record<string, { label: string; color: string }> = {
-  registering: { label: 'На регистрации', color: 'bg-emerald-500/20 text-emerald-400' },
+  registration: { label: 'На регистрации', color: 'bg-emerald-500/20 text-emerald-400' },
   rejected: { label: 'Отказано', color: 'bg-red-500/20 text-red-400' },
 };
 
@@ -12,7 +12,7 @@ export default function HRPanel() {
   const [pending, setPending] = useState<any[]>([]);
 
   useEffect(() => {
-    api.get<any>('/applications?status=registering').then(d => setPending(d.applications)).catch(() => {});
+    api.get<any>('/applications?status=registration').then(d => setPending(d.applications)).catch(() => {});
   }, []);
 
   return (

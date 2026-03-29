@@ -3,7 +3,7 @@ import { useAuth, hasRole } from '../contexts/AuthContext';
 import { api } from '../api/client';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { Database, Plus, Search, Phone, Upload, Users, Send, Check, X, ChevronRight, ArrowLeft, Trash2, AlertCircle } from 'lucide-react';
+import { Database, Plus, Search, Phone, Upload, Users, Send, Check, X, ChevronRight, ArrowLeft, Trash2 } from 'lucide-react';
 
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.06 } } };
 const fadeUp = { hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0, transition: { duration: 0.3 } } };
@@ -27,6 +27,7 @@ export default function Leads() {
   const { user } = useAuth();
 
   if (hasRole(user, 'owner')) return <OwnerLeads />;
+  if (hasRole(user, 'team_leader')) return <AdminLeads />;
   if (hasRole(user, 'admin')) return <AdminLeads />;
   if (hasRole(user, 'scout')) return <ScoutLeads />;
   return <div className="text-dark-400">Нет доступа</div>;
@@ -457,12 +458,12 @@ function AdminLeads() {
                       {approveForm?.id === r.id ? (
                         <div className="flex items-center gap-2">
                           <input type="number" min="1" max={poolCount}
-                            value={approveForm.count}
-                            onChange={e => setApproveForm({ ...approveForm, count: e.target.value })}
+                            value={approveForm!.count}
+                            onChange={e => setApproveForm({ ...approveForm!, count: e.target.value })}
                             className="input-field w-20 text-sm py-1"
                             placeholder="Кол-во" />
-                          <input value={approveForm.comment}
-                            onChange={e => setApproveForm({ ...approveForm, comment: e.target.value })}
+                          <input value={approveForm!.comment}
+                            onChange={e => setApproveForm({ ...approveForm!, comment: e.target.value })}
                             className="input-field w-40 text-sm py-1" placeholder="Комментарий" />
                           <button onClick={() => handleApprove(r.id)} className="p-2 bg-emerald-600 hover:bg-emerald-700 rounded text-white transition">
                             <Check size={16} />

@@ -6,9 +6,15 @@ const { initDatabase } = require('./database');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(cors());
+app.use(cors({
+  origin: process.env.CORS_ORIGIN || ['http://localhost:5173', 'http://localhost:3001'],
+  credentials: true
+}));
 app.use(express.json({ limit: '10mb' }));
-app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
+
+// Protected static file serving for uploads
+const { authMiddleware } = require('./middleware/auth');
+app.use('/uploads', authMiddleware, express.static(path.join(__dirname, '..', 'uploads')));
 
 // API Routes
 app.use('/api/auth', require('./routes/auth'));
@@ -23,14 +29,14 @@ app.use('/api/chat', require('./routes/chat'));
 app.use('/api/upload', require('./routes/upload'));
 
 // ONE-TIME seed endpoint — creates real users inside the running process memory
-app.post('/api/admin/seed-users', (req, res) => {
-  const bcrypt = require('bcryptjs');
-  const { getDb, saveDatabase } = require('./database');
-  const SECRET = 'LIAMKING_SEED_2026';
-  
-  if (req.body.secret !== SECRET) {
+app.post('/api/admin/seed-users', authMiddleware, (req, res) => {
+  const { userHasRole } = require('./middleware/auth');
+  if (!userHasRole(req.user, 'owner')) {
     return res.status(403).json({ error: 'Forbidden' });
   }
+
+  const bcrypt = require('bcryptjs');
+  const { getDb, saveDatabase } = require('./database');
 
   const db = getDb();
   const SQUAD_ID = 2;

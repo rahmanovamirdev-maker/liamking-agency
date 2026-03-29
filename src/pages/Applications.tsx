@@ -102,13 +102,7 @@ export default function Applications() {
       if (photoFile) {
         const formData = new FormData();
         formData.append('photo', photoFile);
-        const res = await fetch('/api/upload', {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
-          body: formData,
-        });
-        if (!res.ok) { const err = await res.json(); throw new Error(err.error || 'Ошибка загрузки фото'); }
-        const data = await res.json();
+        const data = await api.upload<{ url: string }>('/upload', formData);
         candidate_photo = data.url;
       }
       await api.post('/applications', { ...modelForm, app_type: 'model', candidate_photo });
@@ -227,6 +221,7 @@ export default function Applications() {
               onChange={e => {
                 const file = e.target.files?.[0] || null;
                 setPhotoFile(file);
+                if (photoPreview) URL.revokeObjectURL(photoPreview);
                 setPhotoPreview(file ? URL.createObjectURL(file) : null);
               }}
               className="input-field text-sm file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:bg-primary-600 file:text-white file:text-sm file:cursor-pointer" />

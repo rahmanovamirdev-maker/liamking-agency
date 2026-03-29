@@ -177,6 +177,25 @@ router.get('/:id', authMiddleware, (req, res) => {
 
     if (!app) return res.status(404).json({ error: 'Анкета не найдена' });
 
+    // Check access
+    if (!userHasRole(req.user, 'owner')) {
+      const hasDirectAccess = [app.scout_id, app.admin_id, app.curator_id, app.hr_id].includes(req.user.id);
+      let hasRoleAccess = false;
+      if (userHasRole(req.user, 'team_leader')) {
+        const squad = db.prepare('SELECT id FROM squads WHERE admin_id = ?').get(req.user.id);
+        hasRoleAccess = squad && app.squad_id === squad.id;
+      } else if (userHasRole(req.user, 'admin')) {
+        hasRoleAccess = app.admin_id === req.user.id || req.user.team_id === db.prepare('SELECT team_id FROM users WHERE id = ?').get(app.scout_id)?.team_id;
+      } else if (userHasRole(req.user, 'hr_huntme')) {
+        hasRoleAccess = app.direction === 'huntme';
+      } else if (userHasRole(req.user, 'hr_mason')) {
+        hasRoleAccess = app.direction === 'mason';
+      }
+      if (!hasDirectAccess && !hasRoleAccess) {
+        return res.status(403).json({ error: 'Нет доступа к этой анкете' });
+      }
+    }
+
     const history = db.prepare(`
       Select h.*, u.full_name as user_name
       FROM application_history h
@@ -357,6 +376,23 @@ router.put('/:id/status', authMiddleware, (req, res) => {
 router.put('/:id', authMiddleware, (req, res) => {
   const db = getDb();
   try {
+    const app = db.prepare('SELECT * FROM applications WHERE id = ?').get(req.params.id);
+    if (!app) return res.status(404).json({ error: 'Анкета не найдена' });
+
+    // Check access: owner, team_leader of squad, admin of team, or scout who created it
+    if (!userHasRole(req.user, 'owner')) {
+      const isScout = app.scout_id === req.user.id;
+      const isAdmin = userHasRole(req.user, 'team_leader', 'admin') && [app.admin_id].includes(req.user.id);
+      let isSquadLeader = false;
+      if (userHasRole(req.user, 'team_leader')) {
+        const squad = db.prepare('SELECT id FROM squads WHERE admin_id = ?').get(req.user.id);
+        isSquadLeader = squad && app.squad_id === squad.id;
+      }
+      if (!isScout && !isAdmin && !isSquadLeader) {
+        return res.status(403).json({ error: 'Нет прав на редактирование' });
+      }
+    }
+
     const updates = ['updated_at = CURRENT_TIMESTAMP'];
     const values = [];
 

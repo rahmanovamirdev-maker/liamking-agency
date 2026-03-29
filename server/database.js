@@ -21,31 +21,41 @@ class DbWrapper {
       },
       get(...params) {
         const stmt = db.prepare(sql);
-        if (params.length) stmt.bind(params);
-        if (stmt.step()) {
-          const cols = stmt.getColumnNames();
-          const vals = stmt.get();
+        try {
+          if (params.length) stmt.bind(params);
+          if (stmt.step()) {
+            const cols = stmt.getColumnNames();
+            const vals = stmt.get();
+            const obj = {};
+            cols.forEach((c, i) => obj[c] = vals[i]);
+            stmt.free();
+            return obj;
+          }
           stmt.free();
-          const obj = {};
-          cols.forEach((c, i) => obj[c] = vals[i]);
-          return obj;
+          return undefined;
+        } catch(e) {
+          stmt.free();
+          throw e;
         }
-        stmt.free();
-        return undefined;
       },
       all(...params) {
         const stmt = db.prepare(sql);
-        if (params.length) stmt.bind(params);
-        const results = [];
-        const cols = stmt.getColumnNames();
-        while (stmt.step()) {
-          const vals = stmt.get();
-          const obj = {};
-          cols.forEach((c, i) => obj[c] = vals[i]);
-          results.push(obj);
+        try {
+          if (params.length) stmt.bind(params);
+          const results = [];
+          const cols = stmt.getColumnNames();
+          while (stmt.step()) {
+            const vals = stmt.get();
+            const obj = {};
+            cols.forEach((c, i) => obj[c] = vals[i]);
+            results.push(obj);
+          }
+          stmt.free();
+          return results;
+        } catch(e) {
+          stmt.free();
+          throw e;
         }
-        stmt.free();
-        return results;
       }
     };
   }
@@ -101,7 +111,6 @@ async function initDatabase() {
   }
 
   _db = new DbWrapper(db);
-  _db.pragma('journal_mode = WAL');
   _db.pragma('foreign_keys = ON');
 
   _db.exec(`

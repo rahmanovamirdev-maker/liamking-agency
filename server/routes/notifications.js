@@ -1,5 +1,5 @@
 const express = require('express');
-const { getDb } = require('../database');
+const { getDb, saveDatabase } = require('../database');
 const { authMiddleware } = require('../middleware/auth');
 
 const router = express.Router();
@@ -35,25 +35,27 @@ router.get('/unread-count', authMiddleware, (req, res) => {
   }
 });
 
-// Mark as read
-router.put('/:id/read', authMiddleware, (req, res) => {
+// Mark all as read (MUST be before /:id/read to avoid route conflict)
+router.put('/read-all', authMiddleware, (req, res) => {
   const db = getDb();
   try {
-    db.prepare('UPDATE notifications SET is_read = 1 WHERE id = ? AND user_id = ?')
-      .run(req.params.id, req.user.id);
-    res.json({ message: 'Прочитано' });
+    db.prepare('UPDATE notifications SET is_read = 1 WHERE user_id = ?').run(req.user.id);
+    saveDatabase();
+    res.json({ message: 'Все прочитано' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Ошибка сервера' });
   }
 });
 
-// Mark all as read
-router.put('/read-all', authMiddleware, (req, res) => {
+// Mark as read
+router.put('/:id/read', authMiddleware, (req, res) => {
   const db = getDb();
   try {
-    db.prepare('UPDATE notifications SET is_read = 1 WHERE user_id = ?').run(req.user.id);
-    res.json({ message: 'Все прочитано' });
+    db.prepare('UPDATE notifications SET is_read = 1 WHERE id = ? AND user_id = ?')
+      .run(parseInt(req.params.id), req.user.id);
+    saveDatabase();
+    res.json({ message: 'Прочитано' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Ошибка сервера' });

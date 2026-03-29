@@ -3,7 +3,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
-const { getDb } = require('../database');
+const { getDb, saveDatabase } = require('../database');
 const { authMiddleware, userHasRole } = require('../middleware/auth');
 
 const router = express.Router();
@@ -43,9 +43,22 @@ const upload = multer({
 // Check if user has access to this application's chat
 function checkChatAccess(db, applicationId, userId, userRole) {
   if (userHasRole({ role: userRole }, 'owner')) return true;
-  const app = db.prepare('SELECT scout_id, admin_id, curator_id, hr_id FROM applications WHERE id = ?').get(applicationId);
+  const app = db.prepare('SELECT scout_id, admin_id, curator_id, hr_id, squad_id, direction FROM applications WHERE id = ?').get(applicationId);
   if (!app) return false;
-  return [app.scout_id, app.admin_id, app.curator_id, app.hr_id].includes(userId);
+  // Direct participants
+  if ([app.scout_id, app.admin_id, app.curator_id, app.hr_id].includes(userId)) return true;
+  // team_leader of the squad
+  if (userHasRole({ role: userRole }, 'team_leader')) {
+    const squad = db.prepare('SELECT id FROM squads WHERE admin_id = ?').get(userId);
+    if (squad && app.squad_id === squad.id) return true;
+  }
+  // admin of the scout's team
+  if (userHasRole({ role: userRole }, 'admin')) {
+    const scout = db.prepare('SELECT team_id FROM users WHERE id = ?').get(app.scout_id);
+    const admin = db.prepare('SELECT team_id FROM users WHERE id = ?').get(userId);
+    if (scout && admin && scout.team_id === admin.team_id) return true;
+  }
+  return false;
 }
 
 // Get messages for an application
@@ -94,6 +107,7 @@ router.post('/:applicationId', authMiddleware, (req, res) => {
     // Notify other participants
     notifyChatParticipants(db, applicationId, req.user.id, req.user.full_name, message.trim());
 
+    saveDatabase();
     res.status(201).json({ id: result.lastInsertRowid, message: 'Сообщение отправлено' });
   } catch (err) {
     console.error(err);
@@ -132,6 +146,7 @@ router.post('/:applicationId/upload', authMiddleware, (req, res) => {
 
       notifyChatParticipants(db, applicationId, req.user.id, req.user.full_name, '📎 Файл: ' + req.file.originalname);
 
+      saveDatabase();
       res.status(201).json({
         id: result.lastInsertRowid,
         file_name: req.file.originalname,

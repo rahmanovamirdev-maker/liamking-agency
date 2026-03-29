@@ -1,5 +1,5 @@
 const express = require('express');
-const { getDb } = require('../database');
+const { getDb, saveDatabase } = require('../database');
 const { authMiddleware, roleMiddleware } = require('../middleware/auth');
 
 const router = express.Router();
@@ -64,6 +64,7 @@ router.post('/', authMiddleware, roleMiddleware('owner', 'team_leader'), (req, r
       INSERT INTO posts (title, content, author_id, is_pinned)
       VALUES (?, ?, ?, ?)
     `).run(title, content, req.user.id, is_pinned ? 1 : 0);
+    saveDatabase();
     res.status(201).json({ id: result.lastInsertRowid, message: 'Пост создан' });
   } catch (err) {
     console.error(err);
@@ -83,6 +84,7 @@ router.put('/:id', authMiddleware, roleMiddleware('owner', 'team_leader'), (req,
     if (is_pinned !== undefined) { updates.push('is_pinned = ?'); values.push(is_pinned ? 1 : 0); }
     values.push(req.params.id);
     db.prepare(`UPDATE posts SET ${updates.join(', ')} WHERE id = ?`).run(...values);
+    saveDatabase();
     res.json({ message: 'Пост обновлён' });
   } catch (err) {
     console.error(err);
@@ -95,6 +97,7 @@ router.delete('/:id', authMiddleware, roleMiddleware('owner', 'team_leader'), (r
   const db = getDb();
   try {
     db.prepare('DELETE FROM posts WHERE id = ?').run(req.params.id);
+    saveDatabase();
     res.json({ message: 'Пост удалён' });
   } catch (err) {
     console.error(err);
@@ -109,10 +112,14 @@ router.post('/:id/comments', authMiddleware, (req, res) => {
 
   const db = getDb();
   try {
+    const post = db.prepare('SELECT id FROM posts WHERE id = ?').get(req.params.id);
+    if (!post) return res.status(404).json({ error: 'Пост не найден' });
+
     const result = db.prepare(`
       INSERT INTO comments (post_id, user_id, content)
       VALUES (?, ?, ?)
     `).run(req.params.id, req.user.id, content);
+    saveDatabase();
     res.status(201).json({ id: result.lastInsertRowid, message: 'Комментарий добавлен' });
   } catch (err) {
     console.error(err);

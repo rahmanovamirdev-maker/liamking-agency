@@ -308,9 +308,19 @@ function EditUserModal({ user, squads, onSave, onClose }: any) {
     full_name: user.full_name,
     roles: user.role.split(',') as string[],
     squad_id: user.squad_id || '',
+    team_id: user.team_id || '',
     is_active: user.is_active,
     password: '',
   });
+  const [availableTeams, setAvailableTeams] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (form.squad_id) {
+      api.get<any[]>(`/squads/${form.squad_id}/teams`).then(setAvailableTeams).catch(() => setAvailableTeams([]));
+    } else {
+      setAvailableTeams([]);
+    }
+  }, [form.squad_id]);
 
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" onClick={onClose}>
@@ -337,10 +347,16 @@ function EditUserModal({ user, squads, onSave, onClose }: any) {
               ))}
             </div>
           </div>
-          <select value={form.squad_id} onChange={e => setForm({ ...form, squad_id: e.target.value })} className="input-field">
+          <select value={form.squad_id} onChange={e => setForm({ ...form, squad_id: e.target.value, team_id: '' })} className="input-field">
             <option value="">Без сквада</option>
             {squads.map((s: any) => <option key={s.id} value={s.id}>{s.name}</option>)}
           </select>
+          {availableTeams.length > 0 && (
+            <select value={form.team_id} onChange={e => setForm({ ...form, team_id: e.target.value })} className="input-field">
+              <option value="">Без команды</option>
+              {availableTeams.map((t: any) => <option key={t.id} value={t.id}>{t.name}</option>)}
+            </select>
+          )}
           <input value={form.password} onChange={e => setForm({ ...form, password: e.target.value })}
             className="input-field" placeholder="Новый пароль (оставить пустым)" type="password" />
           <label className="flex items-center gap-2 text-sm text-dark-300">
@@ -350,7 +366,7 @@ function EditUserModal({ user, squads, onSave, onClose }: any) {
           </label>
         </div>
         <div className="flex gap-2 mt-4">
-          <button onClick={() => onSave({ ...form, role: form.roles.join(','), squad_id: form.squad_id ? parseInt(form.squad_id) : null, password: form.password || undefined })}
+          <button onClick={() => onSave({ ...form, role: form.roles.join(','), squad_id: form.squad_id ? parseInt(form.squad_id) : null, team_id: form.team_id ? parseInt(form.team_id) : null, password: form.password || undefined })}
             className="btn-primary">Сохранить</button>
           <button onClick={onClose} className="btn-secondary">Отмена</button>
         </div>

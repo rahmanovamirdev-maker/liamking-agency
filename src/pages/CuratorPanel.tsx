@@ -8,8 +8,8 @@ export default function CuratorPanel() {
   const [interviewing, setInterviewing] = useState<any[]>([]);
 
   useEffect(() => {
-    api.get<any>('/applications?status=reviewed').then(d => setReviewed(d.applications)).catch(() => {});
-    api.get<any>('/applications?status=interviewing').then(d => setInterviewing(d.applications)).catch(() => {});
+    api.get<any>('/applications?status=recorded').then(d => setReviewed(d.applications)).catch(() => {});
+    api.get<any>('/applications?status=interview_came').then(d => setInterviewing(d.applications)).catch(() => {});
   }, []);
 
   return (

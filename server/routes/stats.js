@@ -8,12 +8,16 @@ const router = express.Router();
 router.get('/general', authMiddleware, (req, res) => {
   const db = getDb();
   try {
-    const { period } = req.query; // 'day', 'week', 'month', 'year', 'all'
-    let dateFilter = '';
-    if (period === 'day') dateFilter = "AND a.created_at >= datetime('now', '-1 day')";
-    else if (period === 'week') dateFilter = "AND a.created_at >= datetime('now', '-7 days')";
-    else if (period === 'month') dateFilter = "AND a.created_at >= datetime('now', '-1 month')";
-    else if (period === 'year') dateFilter = "AND a.created_at >= datetime('now', '-1 year')";
+    const { period } = req.query;
+    // Safe whitelist approach for date filtering
+    const periodMap = {
+      day: "datetime('now', '-1 day')",
+      week: "datetime('now', '-7 days')",
+      month: "datetime('now', '-1 month')",
+      year: "datetime('now', '-1 year')",
+    };
+    const dateExpr = periodMap[period];
+    const dateFilter = dateExpr ? `AND a.created_at >= ${dateExpr}` : '';
 
     const totalApps = db.prepare(`SELECT COUNT(*) as count FROM applications a WHERE 1=1 ${dateFilter}`).get().count;
     const byStatus = db.prepare(`
@@ -24,7 +28,7 @@ router.get('/general', authMiddleware, (req, res) => {
     const totalLeads = db.prepare('SELECT COUNT(*) as count FROM leads').get().count;
 
     const registered = db.prepare(`
-      SELECT COUNT(*) as count FROM applications a WHERE status = 'registering' ${dateFilter}
+      SELECT COUNT(*) as count FROM applications a WHERE status = 'registration' ${dateFilter}
     `).get().count;
     const rejected = db.prepare(`
       SELECT COUNT(*) as count FROM applications a WHERE status = 'rejected' ${dateFilter}
@@ -53,7 +57,7 @@ router.get('/squads', authMiddleware, (req, res) => {
     const stats = db.prepare(`
       SELECT s.id, s.name,
         COUNT(a.id) as total_apps,
-        SUM(CASE WHEN a.status = 'registering' THEN 1 ELSE 0 END) as registered,
+        SUM(CASE WHEN a.status = 'registration' THEN 1 ELSE 0 END) as registered,
         SUM(CASE WHEN a.status = 'rejected' THEN 1 ELSE 0 END) as rejected
       FROM squads s
       LEFT JOIN applications a ON a.squad_id = s.id
@@ -72,14 +76,20 @@ router.get('/top-agents', authMiddleware, (req, res) => {
   const db = getDb();
   try {
     const { period, limit = 20 } = req.query;
-    let dateFilter = '';
-    if (period === 'week') dateFilter = "AND a.created_at >= datetime('now', '-7 days')";
-    else if (period === 'month') dateFilter = "AND a.created_at >= datetime('now', '-1 month')";
+    const periodMap = {
+      week: "datetime('now', '-7 days')",
+      month: "datetime('now', '-1 month')",
+    };
+    const dateExpr = periodMap[period];
+    const dateFilter = dateExpr ? `AND a.created_at >= ${dateExpr}` : '';
+
+    const parsedLimit = parseInt(limit);
+    const safeLimit = isNaN(parsedLimit) || parsedLimit < 1 ? 20 : parsedLimit;
 
     const agents = db.prepare(`
       SELECT u.id, u.full_name, u.avatar, u.role,
         COUNT(a.id) as total_apps,
-        SUM(CASE WHEN a.status = 'registering' THEN 1 ELSE 0 END) as registered,
+        SUM(CASE WHEN a.status = 'registration' THEN 1 ELSE 0 END) as registered,
         s.name as squad_name
       FROM users u
       LEFT JOIN applications a ON a.scout_id = u.id ${dateFilter}
@@ -88,7 +98,7 @@ router.get('/top-agents', authMiddleware, (req, res) => {
       GROUP BY u.id
       ORDER BY total_apps DESC
       LIMIT ?
-    `).all(parseInt(limit));
+    `).all(safeLimit);
     res.json(agents);
   } catch (err) {
     console.error(err);
@@ -145,11 +155,14 @@ router.get('/my-team', authMiddleware, (req, res) => {
     }
     if (!targetSquadId) return res.json({ squad: null, teams: [], scouts: [], summary: null });
 
-    let dateFilter = '';
-    if (period === 'day') dateFilter = "AND a.created_at >= datetime('now', '-1 day')";
-    else if (period === 'week') dateFilter = "AND a.created_at >= datetime('now', '-7 days')";
-    else if (period === 'month') dateFilter = "AND a.created_at >= datetime('now', '-1 month')";
-    else if (period === 'year') dateFilter = "AND a.created_at >= datetime('now', '-1 year')";
+    const periodMap = {
+      day: "datetime('now', '-1 day')",
+      week: "datetime('now', '-7 days')",
+      month: "datetime('now', '-1 month')",
+      year: "datetime('now', '-1 year')",
+    };
+    const dateExpr = periodMap[period];
+    const dateFilter = dateExpr ? `AND a.created_at >= ${dateExpr}` : '';
 
     // Squad info
     const squad = db.prepare('SELECT * FROM squads WHERE id = ?').get(targetSquadId);
@@ -160,7 +173,7 @@ router.get('/my-team', authMiddleware, (req, res) => {
         ul.full_name as leader_name,
         (SELECT COUNT(*) FROM users WHERE team_id = t.id AND is_active = 1) as member_count,
         COUNT(a.id) as total_apps,
-        SUM(CASE WHEN a.status = 'registering' THEN 1 ELSE 0 END) as registered,
+        SUM(CASE WHEN a.status = 'registration' THEN 1 ELSE 0 END) as registered,
         SUM(CASE WHEN a.status = 'rejected' THEN 1 ELSE 0 END) as rejected
       FROM teams t
       LEFT JOIN users ul ON t.leader_id = ul.id
@@ -176,7 +189,7 @@ router.get('/my-team', authMiddleware, (req, res) => {
       SELECT u.id, u.full_name, u.avatar, u.team_id,
         t.name as team_name,
         COUNT(a.id) as total_apps,
-        SUM(CASE WHEN a.status = 'registering' THEN 1 ELSE 0 END) as registered,
+        SUM(CASE WHEN a.status = 'registration' THEN 1 ELSE 0 END) as registered,
         SUM(CASE WHEN a.status = 'rejected' THEN 1 ELSE 0 END) as rejected,
         MAX(a.created_at) as last_app_date
       FROM users u
@@ -191,7 +204,7 @@ router.get('/my-team', authMiddleware, (req, res) => {
     const summary = db.prepare(`
       SELECT
         COUNT(a.id) as total_apps,
-        SUM(CASE WHEN a.status = 'registering' THEN 1 ELSE 0 END) as registered,
+        SUM(CASE WHEN a.status = 'registration' THEN 1 ELSE 0 END) as registered,
         SUM(CASE WHEN a.status = 'rejected' THEN 1 ELSE 0 END) as rejected,
         COUNT(DISTINCT a.scout_id) as active_scouts
       FROM applications a

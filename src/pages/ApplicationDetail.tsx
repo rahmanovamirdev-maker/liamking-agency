@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth, hasRole } from '../contexts/AuthContext';
 import { api } from '../api/client';
 import toast from 'react-hot-toast';
-import { ArrowLeft, Clock, User, Phone, MessageCircle, Calendar, UserCircle, Monitor, Briefcase, Globe, Laptop, Languages, Send, X, ZoomIn } from 'lucide-react';
+import { ArrowLeft, Clock, User, Phone, MessageCircle, Calendar, UserCircle, Monitor, Briefcase, Globe, Languages, Send, X, ZoomIn } from 'lucide-react';
 import ApplicationChat from '../components/ApplicationChat';
 
 const statusColors: Record<string, string> = {

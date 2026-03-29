@@ -169,9 +169,12 @@ function StatBox({ label, value, color }: { label: string; value: any; color: st
 
 function statusLabel(status: string): string {
   const labels: Record<string, string> = {
-    pending_review: 'На рассмотрении', reviewed: 'Рассмотрено',
-    interviewing: 'На собеседовании', no_show: 'Не пришёл(ла)',
-    registering: 'На регистрации', rejected: 'Отказано',
+    pending_review: 'На рассмотрении', directed: 'Направлена',
+    recorded: 'Записана', interview_came: 'Пришла на собеседование',
+    interview_noshow: 'Не пришла', interview_ignored: 'Игнор собеседования',
+    registration: 'Регистрация', active: 'Активна',
+    training: 'На обучении', ignored: 'Игнор',
+    rejected: 'Отказано',
   };
   return labels[status] || status;
 }

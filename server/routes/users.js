@@ -32,16 +32,28 @@ router.get('/', authMiddleware, (req, res) => {
   }
 });
 
-// Create user (owner only)
+// Create user (owner or team_leader)
 router.post('/', authMiddleware, roleMiddleware('owner', 'team_leader'), (req, res) => {
   const { username, password, full_name, role, squad_id, team_id } = req.body;
   if (!username || !password || !full_name || !role) {
     return res.status(400).json({ error: 'Заполните все обязательные поля' });
   }
+  if (username.length < 2 || username.length > 50) {
+    return res.status(400).json({ error: 'Логин должен быть от 2 до 50 символов' });
+  }
+  if (password.length < 6) {
+    return res.status(400).json({ error: 'Пароль должен быть не менее 6 символов' });
+  }
   // role can be comma-separated, e.g. "admin,curator"
   const roles = role.split(',').map(r => r.trim()).filter(Boolean);
   if (roles.length === 0 || !roles.every(r => VALID_ROLES.includes(r))) {
     return res.status(400).json({ error: 'Недопустимая роль' });
+  }
+  // team_leader cannot create owner or team_leader accounts
+  if (userHasRole(req.user, 'team_leader') && !userHasRole(req.user, 'owner')) {
+    if (roles.includes('owner') || roles.includes('team_leader')) {
+      return res.status(403).json({ error: 'Недостаточно прав для создания этой роли' });
+    }
   }
   const normalizedRole = roles.join(',');
 
@@ -58,6 +70,8 @@ router.post('/', authMiddleware, roleMiddleware('owner', 'team_leader'), (req, r
       VALUES (?, ?, ?, ?, ?, ?)
     `).run(username, hash, full_name, normalizedRole, squad_id || null, team_id || null);
 
+    const { saveDatabase } = require('../database');
+    saveDatabase();
     res.status(201).json({ id: result.lastInsertRowid, message: 'Пользователь создан' });
   } catch (err) {
     console.error(err);
@@ -68,7 +82,10 @@ router.post('/', authMiddleware, roleMiddleware('owner', 'team_leader'), (req, r
 // Update user (owner or self)
 router.put('/:id', authMiddleware, (req, res) => {
   const userId = parseInt(req.params.id);
-  const isOwner = userHasRole(req.user, 'owner', 'team_leader');
+  if (isNaN(userId)) return res.status(400).json({ error: 'Некорректный ID' });
+  const isRealOwner = userHasRole(req.user, 'owner');
+  const isTeamLeader = userHasRole(req.user, 'team_leader');
+  const isOwner = isRealOwner || isTeamLeader;
   const isSelf = req.user.id === userId;
 
   if (!isOwner && !isSelf) {
@@ -90,6 +107,16 @@ router.put('/:id', authMiddleware, (req, res) => {
       if (roles.length === 0 || !roles.every(r => VALID_ROLES.includes(r))) {
         return res.status(400).json({ error: 'Недопустимая роль' });
       }
+      // team_leader cannot assign owner/team_leader roles
+      if (isTeamLeader && !isRealOwner) {
+        if (roles.includes('owner') || roles.includes('team_leader')) {
+          return res.status(403).json({ error: 'Недостаточно прав для назначения этой роли' });
+        }
+      }
+      // Prevent self-role-elevation
+      if (isSelf && !isRealOwner) {
+        return res.status(403).json({ error: 'Нельзя менять свою роль' });
+      }
       updates.push('role = ?'); values.push(roles.join(','));
     }
     if (isOwner && squad_id !== undefined) { updates.push('squad_id = ?'); values.push(squad_id || null); }
@@ -106,6 +133,8 @@ router.put('/:id', authMiddleware, (req, res) => {
 
     values.push(userId);
     db.prepare(`UPDATE users SET ${updates.join(', ')} WHERE id = ?`).run(...values);
+    const { saveDatabase } = require('../database');
+    saveDatabase();
     res.json({ message: 'Пользователь обновлён' });
   } catch (err) {
     console.error(err);

@@ -1,8 +1,18 @@
 const express = require('express');
-const { getDb } = require('../database');
-const { authMiddleware, roleMiddleware } = require('../middleware/auth');
+const { getDb, saveDatabase } = require('../database');
+const { authMiddleware, roleMiddleware, userHasRole } = require('../middleware/auth');
 
 const router = express.Router();
+
+// Helper: check if team_leader owns this squad
+function checkSquadAccess(db, user, squadId) {
+  if (userHasRole(user, 'owner')) return true;
+  if (userHasRole(user, 'team_leader')) {
+    const squad = db.prepare('SELECT id FROM squads WHERE id = ? AND admin_id = ?').get(squadId, user.id);
+    return !!squad;
+  }
+  return false;
+}
 
 // Get all squads
 router.get('/', authMiddleware, (req, res) => {
@@ -75,6 +85,9 @@ router.put('/:id', authMiddleware, roleMiddleware('owner', 'team_leader'), (req,
   const { name, admin_id } = req.body;
   const db = getDb();
   try {
+    if (!checkSquadAccess(db, req.user, req.params.id)) {
+      return res.status(403).json({ error: 'Нет доступа к этому скваду' });
+    }
     const updates = [];
     const values = [];
     if (name) { updates.push('name = ?'); values.push(name); }
@@ -93,7 +106,7 @@ router.put('/:id', authMiddleware, roleMiddleware('owner', 'team_leader'), (req,
 });
 
 // Delete squad
-router.delete('/:id', authMiddleware, roleMiddleware('owner', 'team_leader'), (req, res) => {
+router.delete('/:id', authMiddleware, roleMiddleware('owner'), (req, res) => {
   const db = getDb();
   try {
     db.prepare('UPDATE users SET squad_id = NULL, team_id = NULL WHERE squad_id = ?').run(req.params.id);
@@ -146,6 +159,13 @@ router.put('/teams/:teamId', authMiddleware, roleMiddleware('owner', 'team_leade
   const { name, leader_id } = req.body;
   const db = getDb();
   try {
+    // Check team_leader access to this team's squad
+    if (userHasRole(req.user, 'team_leader') && !userHasRole(req.user, 'owner')) {
+      const team = db.prepare('SELECT squad_id FROM teams WHERE id = ?').get(req.params.teamId);
+      if (!team || !checkSquadAccess(db, req.user, team.squad_id)) {
+        return res.status(403).json({ error: 'Нет доступа к этой команде' });
+      }
+    }
     const updates = [];
     const values = [];
     if (name) { updates.push('name = ?'); values.push(name); }
@@ -164,7 +184,7 @@ router.put('/teams/:teamId', authMiddleware, roleMiddleware('owner', 'team_leade
 });
 
 // Delete team
-router.delete('/teams/:teamId', authMiddleware, roleMiddleware('owner', 'team_leader'), (req, res) => {
+router.delete('/teams/:teamId', authMiddleware, roleMiddleware('owner'), (req, res) => {
   const db = getDb();
   try {
     db.prepare('UPDATE users SET team_id = NULL WHERE team_id = ?').run(req.params.teamId);
