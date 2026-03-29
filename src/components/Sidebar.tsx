@@ -32,7 +32,7 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
     { to: '/archive', icon: Archive, label: 'Архив', roles: ['owner', 'team_leader', 'curator', 'hr', 'hr_huntme', 'hr_mason'] },
     { to: '/notifications', icon: Bell, label: 'Уведомления', roles: ['owner', 'team_leader', 'admin', 'curator', 'hr', 'hr_huntme', 'hr_mason', 'scout'] },
     { to: '/curator-panel', icon: UserCheck, label: 'Панель Куратора', roles: ['owner', 'curator'] },
-    { to: '/admin-panel', icon: Shield, label: 'Панель Управления', roles: ['owner'] },
+    { to: '/admin-panel', icon: Shield, label: 'Панель Управления', roles: ['owner', 'team_leader'] },
     { to: '/profile', icon: User, label: 'Профиль', roles: ['owner', 'team_leader', 'admin', 'curator', 'hr', 'hr_huntme', 'hr_mason', 'scout'] },
   ];
 

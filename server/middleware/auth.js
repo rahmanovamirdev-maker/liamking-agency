@@ -28,6 +28,13 @@ function authMiddleware(req, res, next) {
   const token = authHeader.split(' ')[1];
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
+    // Refresh role from DB to prevent stale JWT issues
+    const { getDb } = require('../database');
+    const db = getDb();
+    const freshUser = db.prepare('SELECT role FROM users WHERE id = ?').get(decoded.id);
+    if (freshUser) {
+      decoded.role = freshUser.role;
+    }
     req.user = decoded;
     next();
   } catch {

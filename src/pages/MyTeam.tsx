@@ -4,7 +4,7 @@ import { api } from '../api/client';
 import { useAuth } from '../contexts/AuthContext';
 import { UsersRound, Calendar, TrendingUp, ChevronDown, ChevronRight, User } from 'lucide-react';
 
-const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.08 } } };
+const stagger = { hidden: { opacity: 1 }, visible: { opacity: 1, transition: { staggerChildren: 0.08 } } };
 const fadeUp = { hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.4 } } };
 
 interface TeamStats {
@@ -36,18 +36,22 @@ export default function MyTeam() {
   const [period, setPeriod] = useState('all');
   const [expandedTeams, setExpandedTeams] = useState<Set<number>>(new Set());
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => { loadData(); }, [period]);
 
   async function loadData() {
     setLoading(true);
+    setError(null);
     try {
       const res = await api.get<SquadData>(`/stats/my-team?period=${period}`);
       setData(res);
       if (res.teams.length > 0 && expandedTeams.size === 0) {
         setExpandedTeams(new Set(res.teams.map(t => t.id)));
       }
-    } catch { /* ignore */ }
+    } catch (err: any) {
+      setError(err?.message || 'Не удалось загрузить данные');
+    }
     setLoading(false);
   }
 
@@ -73,6 +77,17 @@ export default function MyTeam() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="animate-spin w-8 h-8 border-2 border-primary-500 border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center h-64 text-red-400">
+        <UsersRound size={48} className="mb-4 opacity-50" />
+        <p className="text-lg font-medium">Ошибка загрузки</p>
+        <p className="text-sm text-dark-400 mt-2">{error}</p>
+        <button onClick={loadData} className="btn-primary mt-4">Повторить</button>
       </div>
     );
   }

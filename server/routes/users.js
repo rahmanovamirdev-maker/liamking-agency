@@ -12,7 +12,7 @@ router.get('/', authMiddleware, (req, res) => {
   const db = getDb();
   try {
     let users;
-    if (userHasRole(req.user, 'owner')) {
+    if (userHasRole(req.user, 'owner', 'team_leader')) {
       users = db.prepare(`
         SELECT u.id, u.username, u.full_name, u.avatar, u.about, u.wallet, u.role,
                u.squad_id, u.team_id, u.is_active, u.created_at,
@@ -22,19 +22,6 @@ router.get('/', authMiddleware, (req, res) => {
         LEFT JOIN teams t ON u.team_id = t.id
         ORDER BY u.role, u.full_name
       `).all();
-    } else if (userHasRole(req.user, 'team_leader')) {
-      const squad = db.prepare('SELECT id FROM squads WHERE admin_id = ?').get(req.user.id);
-      if (!squad) return res.json([]);
-      users = db.prepare(`
-        SELECT u.id, u.username, u.full_name, u.avatar, u.about, u.role,
-               u.squad_id, u.team_id, u.is_active, u.created_at,
-               s.name as squad_name, t.name as team_name
-        FROM users u
-        LEFT JOIN squads s ON u.squad_id = s.id
-        LEFT JOIN teams t ON u.team_id = t.id
-        WHERE u.squad_id = ?
-        ORDER BY u.role, u.full_name
-      `).all(squad.id);
     } else {
       users = [];
     }
@@ -46,7 +33,7 @@ router.get('/', authMiddleware, (req, res) => {
 });
 
 // Create user (owner only)
-router.post('/', authMiddleware, roleMiddleware('owner'), (req, res) => {
+router.post('/', authMiddleware, roleMiddleware('owner', 'team_leader'), (req, res) => {
   const { username, password, full_name, role, squad_id, team_id } = req.body;
   if (!username || !password || !full_name || !role) {
     return res.status(400).json({ error: 'Заполните все обязательные поля' });
@@ -81,7 +68,7 @@ router.post('/', authMiddleware, roleMiddleware('owner'), (req, res) => {
 // Update user (owner or self)
 router.put('/:id', authMiddleware, (req, res) => {
   const userId = parseInt(req.params.id);
-  const isOwner = userHasRole(req.user, 'owner');
+  const isOwner = userHasRole(req.user, 'owner', 'team_leader');
   const isSelf = req.user.id === userId;
 
   if (!isOwner && !isSelf) {

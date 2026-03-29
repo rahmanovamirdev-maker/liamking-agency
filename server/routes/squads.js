@@ -53,7 +53,7 @@ router.get('/:id/hierarchy', authMiddleware, (req, res) => {
 });
 
 // Create squad (owner only)
-router.post('/', authMiddleware, roleMiddleware('owner'), (req, res) => {
+router.post('/', authMiddleware, roleMiddleware('owner', 'team_leader'), (req, res) => {
   const { name, admin_id } = req.body;
   if (!name) return res.status(400).json({ error: 'Введите название сквада' });
 
@@ -71,7 +71,7 @@ router.post('/', authMiddleware, roleMiddleware('owner'), (req, res) => {
 });
 
 // Update squad
-router.put('/:id', authMiddleware, roleMiddleware('owner'), (req, res) => {
+router.put('/:id', authMiddleware, roleMiddleware('owner', 'team_leader'), (req, res) => {
   const { name, admin_id } = req.body;
   const db = getDb();
   try {
@@ -93,7 +93,7 @@ router.put('/:id', authMiddleware, roleMiddleware('owner'), (req, res) => {
 });
 
 // Delete squad
-router.delete('/:id', authMiddleware, roleMiddleware('owner'), (req, res) => {
+router.delete('/:id', authMiddleware, roleMiddleware('owner', 'team_leader'), (req, res) => {
   const db = getDb();
   try {
     db.prepare('UPDATE users SET squad_id = NULL, team_id = NULL WHERE squad_id = ?').run(req.params.id);

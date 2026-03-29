@@ -52,7 +52,7 @@ router.get('/:id', authMiddleware, (req, res) => {
 });
 
 // Create post (owner only)
-router.post('/', authMiddleware, roleMiddleware('owner'), (req, res) => {
+router.post('/', authMiddleware, roleMiddleware('owner', 'team_leader'), (req, res) => {
   const { title, content, is_pinned } = req.body;
   if (!title || !content) {
     return res.status(400).json({ error: 'Заполните заголовок и содержание' });
@@ -72,7 +72,7 @@ router.post('/', authMiddleware, roleMiddleware('owner'), (req, res) => {
 });
 
 // Update post
-router.put('/:id', authMiddleware, roleMiddleware('owner'), (req, res) => {
+router.put('/:id', authMiddleware, roleMiddleware('owner', 'team_leader'), (req, res) => {
   const { title, content, is_pinned } = req.body;
   const db = getDb();
   try {
@@ -91,7 +91,7 @@ router.put('/:id', authMiddleware, roleMiddleware('owner'), (req, res) => {
 });
 
 // Delete post
-router.delete('/:id', authMiddleware, roleMiddleware('owner'), (req, res) => {
+router.delete('/:id', authMiddleware, roleMiddleware('owner', 'team_leader'), (req, res) => {
   const db = getDb();
   try {
     db.prepare('DELETE FROM posts WHERE id = ?').run(req.params.id);

@@ -208,7 +208,7 @@ router.get('/my-team', authMiddleware, (req, res) => {
 
 // Logs (owner only)
 router.get('/logs', authMiddleware, (req, res) => {
-  if (!userHasRole(req.user, 'owner')) {
+  if (!userHasRole(req.user, 'owner', 'team_leader')) {
     return res.status(403).json({ error: 'Недостаточно прав' });
   }
   const db = getDb();

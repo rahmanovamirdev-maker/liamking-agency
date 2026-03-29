@@ -46,7 +46,7 @@ export default function App() {
         <Route path="notifications" element={<Notifications />} />
         <Route path="profile" element={<Profile />} />
         <Route path="admin-panel" element={
-          <ProtectedRoute roles={['owner']}><AdminPanel /></ProtectedRoute>
+          <ProtectedRoute roles={['owner', 'team_leader']}><AdminPanel /></ProtectedRoute>
         } />
         <Route path="curator-panel" element={
           <ProtectedRoute roles={['owner', 'curator']}><CuratorPanel /></ProtectedRoute>
