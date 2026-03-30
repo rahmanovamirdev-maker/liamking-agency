@@ -91,7 +91,7 @@ export default function Home() {
                     <p className="text-sm text-dark-400 mt-1 line-clamp-2">{post.content}</p>
                     <div className="flex items-center gap-4 mt-3 text-xs text-dark-500">
                       <span>{post.author_name}</span>
-                      <span>{new Date(post.created_at).toLocaleDateString('ru')}</span>
+                      <span>{new Date(post.created_at).toLocaleDateString('ru', { timeZone: 'Europe/Moscow' })}</span>
                       <span className="flex items-center gap-1"><Eye size={12} /> {post.views}</span>
                       <span className="flex items-center gap-1"><MessageSquare size={12} /> {post.comment_count}</span>
                     </div>

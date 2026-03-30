@@ -62,7 +62,7 @@ export default function Profile() {
           <p className="text-primary-400 flex items-center gap-1"><Shield size={14} /> {user.roles.map(r => roleLabels[r] || r).join(', ')}</p>
           {user.squad_name && <p className="text-sm text-dark-400 mt-1">Сквад: {user.squad_name}</p>}
           {user.team_name && <p className="text-sm text-dark-400">Команда: {user.team_name}</p>}
-          <p className="text-xs text-dark-500 mt-1">@{user.username} • На платформе с {new Date(user.created_at).toLocaleDateString('ru')}</p>
+          <p className="text-xs text-dark-500 mt-1">@{user.username} • На платформе с {new Date(user.created_at).toLocaleDateString('ru', { timeZone: 'Europe/Moscow' })}</p>
         </div>
       </motion.div>
 

@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>LIAMKING AGENCY — Руководство для скаута</title>
+<style>
+  @page { size: A4; margin: 20mm; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Tahoma, sans-serif; color: #1a1a2e; line-height: 1.7; background: #fff; }
+  
+  .page { page-break-after: always; padding: 40px; min-height: 100vh; }
+  .page:last-child { page-break-after: avoid; }
+
+  .cover { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: linear-gradient(135deg, #0f0f23, #1a1a3e); color: #fff; }
+  .cover .logo { width: 90px; height: 90px; background: linear-gradient(135deg, #6366f1, #8b5cf6); border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 900; color: #fff; margin-bottom: 24px; box-shadow: 0 20px 60px rgba(99,102,241,0.4); }
+  .cover h1 { font-size: 42px; font-weight: 800; }
+  .cover .subtitle { font-size: 22px; color: #a5b4fc; margin-top: 8px; }
+  .cover .tagline { font-size: 16px; color: #6b7280; margin-top: 30px; }
+
+  h2 { font-size: 26px; color: #1a1a2e; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 3px solid #6366f1; }
+  h3 { font-size: 18px; color: #4338ca; margin: 18px 0 8px; }
+  p, li { font-size: 14px; }
+  ul, ol { padding-left: 22px; margin: 8px 0; }
+  li { margin: 5px 0; }
+
+  .step-number { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: #6366f1; color: #fff; border-radius: 50%; font-weight: 800; font-size: 18px; margin-right: 12px; flex-shrink: 0; }
+  .step { display: flex; align-items: flex-start; margin: 16px 0; background: #f8fafc; border-radius: 12px; padding: 16px; border: 1px solid #e5e7eb; }
+  .step-content { flex: 1; }
+  .step-content strong { font-size: 15px; color: #1a1a2e; }
+  .step-content p { margin-top: 4px; color: #4b5563; font-size: 13px; }
+
+  .tip { background: #ecfdf5; border-left: 4px solid #10b981; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 14px 0; font-size: 13px; }
+  .tip strong { color: #065f46; }
+  .warning { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 14px 0; font-size: 13px; }
+  .warning strong { color: #92400e; }
+
+  .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 14px 0; }
+  .card { background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px; }
+  .card-title { font-weight: 700; color: #4338ca; font-size: 14px; margin-bottom: 4px; }
+  .card p { font-size: 13px; color: #4b5563; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  th { background: #6366f1; color: #fff; padding: 8px 12px; text-align: left; font-weight: 600; }
+  td { padding: 8px 12px; border-bottom: 1px solid #e5e7eb; }
+  tr:nth-child(even) { background: #f8fafc; }
+
+  .flow-box { background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; margin: 14px 0; font-family: 'Consolas', monospace; font-size: 13px; line-height: 1.9; white-space: pre-wrap; }
+
+  .section-icon { font-size: 28px; margin-right: 10px; vertical-align: middle; }
+
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .badge-green { background: #d1fae5; color: #065f46; }
+  .badge-blue { background: #dbeafe; color: #1e40af; }
+  .badge-amber { background: #fef3c7; color: #92400e; }
+  .badge-red { background: #fee2e2; color: #991b1b; }
+  .badge-purple { background: #ede9fe; color: #6d28d9; }
+  .badge-gray { background: #f3f4f6; color: #374151; }
+
+  .highlight { background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 12px; padding: 16px; margin: 14px 0; }
+</style>
+</head>
+<body>
+
+<!-- ОБЛОЖКА -->
+<div class="page cover">
+  <div class="logo">LK</div>
+  <h1>LIAMKING AGENCY</h1>
+  <p class="subtitle">Руководство для скаута</p>
+  <p class="tagline">Всё, что нужно знать для начала работы</p>
+  <p class="tagline" style="margin-top: 10px; font-size: 14px;">Март 2026</p>
+</div>
+
+<!-- СТРАНИЦА 1: ВВЕДЕНИЕ -->
+<div class="page">
+  <h2><span class="section-icon">👋</span> Добро пожаловать</h2>
+  
+  <p style="font-size: 16px; margin-bottom: 16px;">
+    Ты — <strong>скаут</strong>. Твоя задача — находить кандидатов (моделей и операторов), заполнять на них анкеты и вести работу с лидами. Вся работа ведётся через нашу платформу <strong>LIAMKING AGENCY</strong>.
+  </p>
+
+  <h3>Что тебе доступно в системе</h3>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-title">🏠 Главная</div>
+      <p>Общая статистика, быстрые действия, лента новостей от руководства</p>
+    </div>
+    <div class="card">
+      <div class="card-title">📋 Анкеты</div>
+      <p>Здесь ты создаёшь анкеты на кандидатов и отслеживаешь их статус</p>
+    </div>
+    <div class="card">
+      <div class="card-title">📱 БД Лидов</div>
+      <p>Твои лиды — контакты для обработки. Можно запросить ещё</p>
+    </div>
+    <div class="card">
+      <div class="card-title">👥 Команды</div>
+      <p>Структура: кто в каком скваде и в какой команде</p>
+    </div>
+    <div class="card">
+      <div class="card-title">📊 Статистика</div>
+      <p>Твои личные результаты и общие показатели</p>
+    </div>
+    <div class="card">
+      <div class="card-title">🏆 Достижения</div>
+      <p>Система наград за анкеты, регистрации и активность</p>
+    </div>
+    <div class="card">
+      <div class="card-title">🔔 Уведомления</div>
+      <p>Сюда приходят обновления по твоим анкетам</p>
+    </div>
+    <div class="card">
+      <div class="card-title">👤 Профиль</div>
+      <p>Настройки аккаунта, смена пароля, кошелёк для выплат</p>
+    </div>
+  </div>
+
+  <div class="tip">
+    <strong>💡 Совет:</strong> Добавь сайт в закладки браузера для быстрого доступа. Платформа работает и на телефоне — можно использовать на ходу.
+  </div>
+</div>
+
+<!-- СТРАНИЦА 2: СОЗДАНИЕ АНКЕТЫ -->
+<div class="page">
+  <h2><span class="section-icon">📋</span> Как создать анкету</h2>
+  
+  <p style="margin-bottom: 16px;">Нашёл кандидата — заполни анкету. Это твоя основная работа. Заходи в раздел <strong>«Анкеты»</strong> и нажми кнопку <strong>«+ Новая анкета»</strong>.</p>
+
+  <h3>Шаг 1: Выбери тип анкеты</h3>
+  <div class="card-grid">
+    <div class="card" style="border-left: 4px solid #ec4899;">
+      <div class="card-title">👩 Модель</div>
+      <p>Девушки/парни для работы моделью на платформах</p>
+    </div>
+    <div class="card" style="border-left: 4px solid #3b82f6;">
+      <div class="card-title">🖥️ Оператор</div>
+      <p>Кандидаты для работы оператором (чаты, управление)</p>
+    </div>
+  </div>
+
+  <h3>Шаг 2: Заполни поля</h3>
+  
+  <h4 style="color: #ec4899; font-size: 14px; margin: 12px 0 6px;">Для модели:</h4>
+  <table>
+    <tr><th style="width: 30%;">Поле</th><th>Что заполнять</th></tr>
+    <tr><td><strong>Имя кандидатки</strong></td><td>Настоящее имя</td></tr>
+    <tr><td><strong>Возраст</strong></td><td>Полных лет</td></tr>
+    <tr><td><strong>Телефон</strong></td><td>Номер для связи</td></tr>
+    <tr><td><strong>Telegram</strong></td><td>Username в телеграме</td></tr>
+    <tr><td><strong>Как представились</strong></td><td>Кем ты представился при контакте</td></tr>
+    <tr><td><strong>Вакансия</strong></td><td>Точное название вакансии, которую обсудили</td></tr>
+    <tr><td><strong>Языки</strong></td><td>Какими языками владеет кандидатка</td></tr>
+    <tr><td><strong>Должность/роль</strong></td><td>Роль для адаптации</td></tr>
+    <tr><td><strong>Nude / No-Nude</strong></td><td>Готова ли к откровенному контенту</td></tr>
+    <tr><td><strong>Описание</strong></td><td>Что рассказала, её ожидания, заметки</td></tr>
+    <tr><td><strong>Фото</strong></td><td>Фото кандидатки (по возможности)</td></tr>
+  </table>
+
+  <h4 style="color: #3b82f6; font-size: 14px; margin: 12px 0 6px;">Для оператора:</h4>
+  <table>
+    <tr><th style="width: 30%;">Поле</th><th>Что заполнять</th></tr>
+    <tr><td><strong>Имя кандидата</strong></td><td>Настоящее имя</td></tr>
+    <tr><td><strong>Возраст</strong></td><td>Полных лет</td></tr>
+    <tr><td><strong>Телефон / Telegram</strong></td><td>Контакты для связи</td></tr>
+    <tr><td><strong>Компания</strong></td><td>Предыдущее место работы (если есть)</td></tr>
+    <tr><td><strong>Уровень английского</strong></td><td>Beginner / Intermediate / Advanced / Fluent</td></tr>
+    <tr><td><strong>Опыт работы</strong></td><td>Описание опыта</td></tr>
+    <tr><td><strong>Характеристики ПК</strong></td><td>Видеокарта, процессор, скорость интернета</td></tr>
+  </table>
+
+  <div class="warning">
+    <strong>⚠️ Важно:</strong> Заполняй все поля максимально подробно. Чем больше информации — тем выше шансы, что анкету одобрят и кандидат дойдёт до регистрации.
+  </div>
+</div>
+
+<!-- СТРАНИЦА 3: ЧТО ПРОИСХОДИТ С АНКЕТОЙ ДАЛЬШЕ -->
+<div class="page">
+  <h2><span class="section-icon">🔄</span> Что происходит после отправки</h2>
+  
+  <p style="margin-bottom: 16px;">После того как ты отправил анкету, она проходит несколько этапов. Тебе не нужно ничего делать — просто следи за уведомлениями.</p>
+
+  <div class="step">
+    <span class="step-number">1</span>
+    <div class="step-content">
+      <strong>Ты создал анкету</strong>
+      <p>Статус: <span class="badge badge-amber">На рассмотрении</span>. Анкета попадает к твоему лидеру для проверки.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <span class="step-number">2</span>
+    <div class="step-content">
+      <strong>Лидер направляет анкету</strong>
+      <p>Если всё в порядке, лидер направит анкету на партнёра — <span class="badge badge-purple">HuntMe</span> или <span class="badge badge-amber">Mason</span>. Статус: <span class="badge badge-blue">Направлена</span>. Тебе придёт уведомление.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <span class="step-number">3</span>
+    <div class="step-content">
+      <strong>HR обрабатывает анкету</strong>
+      <p>HR-менеджер связывается с кандидатом, назначает собеседование, ведёт процесс. На каждом этапе тебе приходит уведомление.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <span class="step-number">4</span>
+    <div class="step-content">
+      <strong>Результат</strong>
+      <p>
+        ✅ <span class="badge badge-green">Регистрация</span> — кандидат трудоустроен. Поздравляем!<br>
+        ❌ <span class="badge badge-red">Отказ</span> — не прошёл. Причина указана в анкете.<br>
+        ⚠️ <span class="badge badge-gray">Не пришёл / Игнор</span> — кандидат не вышел на связь.
+      </p>
+    </div>
+  </div>
+
+  <div class="highlight">
+    <h3 style="margin-top: 0;">💬 Чат по анкете</h3>
+    <p>К каждой анкете привязан чат. Там ты можешь:</p>
+    <ul>
+      <li>Уточнить детали по кандидату</li>
+      <li>Ответить на вопросы HR или лидера</li>
+      <li>Отправить дополнительные файлы или фото (до 5 МБ)</li>
+    </ul>
+    <p style="margin-top: 8px;">Чат обновляется автоматически. Когда кто-то напишет — тебе придёт уведомление со звуком.</p>
+  </div>
+
+  <div class="tip">
+    <strong>💡 Совет:</strong> Регулярно проверяй раздел «Анкеты» — можно отфильтровать свои анкеты по статусу и видеть, какие уже на рассмотрении, какие направлены, какие ждут собеседования.
+  </div>
+</div>
+
+<!-- СТРАНИЦА 4: ЛИДЫ -->
+<div class="page">
+  <h2><span class="section-icon">📱</span> Работа с лидами</h2>
+  
+  <p style="margin-bottom: 16px;">Лиды — это контакты потенциальных кандидатов, которые тебе выдают для обработки. Раздел <strong>«БД Лидов»</strong>.</p>
+
+  <h3>Твои лиды</h3>
+  <p>Здесь ты видишь все лиды, которые назначены на тебя. У каждого лида есть статус:</p>
+  
+  <table>
+    <tr><th>Статус</th><th>Что значит</th><th>Что делать</th></tr>
+    <tr>
+      <td><span class="badge badge-blue">Новый</span></td>
+      <td>Только что получил, ещё не трогал</td>
+      <td>Начни обработку — позвони/напиши</td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-amber">В работе</span></td>
+      <td>Начал общение</td>
+      <td>Продолжай вести диалог</td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-purple">Связался</span></td>
+      <td>Установил контакт</td>
+      <td>Договаривайся и создавай анкету</td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-green">Обработан</span></td>
+      <td>Лид закрыт — анкета создана или закончена работа</td>
+      <td>Готово! Переходи к следующему</td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-red">Отказ</span></td>
+      <td>Кандидат отказался</td>
+      <td>Отметь и двигайся дальше</td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-amber">Игнор</span></td>
+      <td>Не отвечает</td>
+      <td>Попробуй ещё раз или отметь игнор</td>
+    </tr>
+  </table>
+
+  <h3>Как запросить лиды</h3>
+  <div class="step">
+    <span class="step-number">1</span>
+    <div class="step-content">
+      <strong>Нажми «Запросить лиды»</strong>
+      <p>Кнопка находится в разделе «БД Лидов». Заявка уйдёт твоему Team Leader.</p>
+    </div>
+  </div>
+  <div class="step">
+    <span class="step-number">2</span>
+    <div class="step-content">
+      <strong>Дождись ответа</strong>
+      <p>Лидер может одобрить (тебе придут новые лиды) или отклонить (с комментарием). Уведомление придёт автоматически.</p>
+    </div>
+  </div>
+  <div class="step">
+    <span class="step-number">3</span>
+    <div class="step-content">
+      <strong>Работай с лидами</strong>
+      <p>Меняй статусы по мере обработки. Если кандидат заинтересован — создавай анкету!</p>
+    </div>
+  </div>
+
+  <div class="tip">
+    <strong>💡 Совет:</strong> Обрабатывай лиды оперативно. Чем быстрее свяжешься — тем выше шанс на результат. Не копи новые лиды.
+  </div>
+</div>
+
+<!-- СТРАНИЦА 5: УВЕДОМЛЕНИЯ, ДОСТИЖЕНИЯ, ПРОФИЛЬ -->
+<div class="page">
+  <h2><span class="section-icon">🔔</span> Уведомления</h2>
+  
+  <p style="margin-bottom: 14px;">Система автоматически уведомляет тебя о важных событиях. Счётчик непрочитанных виден в боковом меню.</p>
+
+  <table>
+    <tr><th>Что произошло</th><th>Что увидишь</th></tr>
+    <tr><td>Лидер направил твою анкету на партнёра</td><td>«Анкета "Имя" направлена на HuntMe/Mason»</td></tr>
+    <tr><td>HR изменил статус анкеты</td><td>«Анкета "Имя" — новый статус»</td></tr>
+    <tr><td>Кто-то написал в чат по анкете</td><td>«Новое сообщение — Имя кандидата»</td></tr>
+    <tr><td>Заявка на лиды одобрена</td><td>«Вам выдано N лидов»</td></tr>
+    <tr><td>Заявка на лиды отклонена</td><td>«Ваша заявка на лиды отклонена» + причина</td></tr>
+  </table>
+
+  <div class="tip">
+    <strong>🔊 Звук:</strong> При новом уведомлении прозвучит короткий сигнал. Убедись, что звук на устройстве включён и кликни хотя бы раз на странице (браузер требует это для воспроизведения звука).
+  </div>
+
+  <h2 style="margin-top: 30px;"><span class="section-icon">🏆</span> Достижения</h2>
+  
+  <p style="margin-bottom: 14px;">В системе есть геймификация — зарабатывай достижения за работу!</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-title">🎯 За анкеты</div>
+      <p>Создал 5 / 25 / 100 / 500 анкет — получаешь награду</p>
+    </div>
+    <div class="card">
+      <div class="card-title">⭐ За регистрации</div>
+      <p>Чем больше кандидатов дошли до регистрации — тем круче награда</p>
+    </div>
+    <div class="card">
+      <div class="card-title">🔥 За лиды</div>
+      <p>Обработал 10 / 50 / 200 лидов — прогресс растёт</p>
+    </div>
+    <div class="card">
+      <div class="card-title">🏅 За активность</div>
+      <p>Работай каждый день — получай стрик-награды</p>
+    </div>
+  </div>
+
+  <p>В разделе «Достижения» видно твой прогресс и <strong>таблицу лидеров</strong> — кто на первом месте.</p>
+
+  <h2 style="margin-top: 30px;"><span class="section-icon">👤</span> Профиль</h2>
+  
+  <p>В разделе «Профиль» ты можешь:</p>
+  <ul>
+    <li><strong>Изменить ФИО</strong> и добавить описание о себе</li>
+    <li><strong>Указать кошелёк для выплат</strong> (TRC20) — обязательно!</li>
+    <li><strong>Сменить пароль</strong> (минимум 6 символов)</li>
+    <li>Посмотреть свою статистику: всего анкет, регистрации, за неделю/месяц</li>
+  </ul>
+
+  <div class="warning">
+    <strong>⚠️ Не забудь:</strong> Сразу после первого входа заполни кошелёк TRC20 в профиле, чтобы получать выплаты вовремя.
+  </div>
+</div>
+
+<!-- СТРАНИЦА 6: БЫСТРЫЙ СТАРТ -->
+<div class="page">
+  <h2><span class="section-icon">🚀</span> Быстрый старт: первые шаги</h2>
+  
+  <div class="step">
+    <span class="step-number">1</span>
+    <div class="step-content">
+      <strong>Получи логин и пароль</strong>
+      <p>Твой лидер создаст тебе аккаунт и передаст данные для входа.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <span class="step-number">2</span>
+    <div class="step-content">
+      <strong>Войди в систему</strong>
+      <p>Открой сайт LIAMKING AGENCY, введи логин и пароль. Работает в любом браузере и на телефоне.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <span class="step-number">3</span>
+    <div class="step-content">
+      <strong>Заполни профиль</strong>
+      <p>Перейди в «Профиль» → укажи ФИО, добавь описание, <strong>обязательно укажи кошелёк TRC20</strong> для выплат. Смени пароль на свой.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <span class="step-number">4</span>
+    <div class="step-content">
+      <strong>Запроси лиды</strong>
+      <p>Перейди в «БД Лидов» → нажми «Запросить лиды». Лидер одобрит, и у тебя появятся контакты для работы.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <span class="step-number">5</span>
+    <div class="step-content">
+      <strong>Обрабатывай лиды</strong>
+      <p>Связывайся с контактами, меняй статусы. Нашёл подходящего кандидата — переходи к созданию анкеты.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <span class="step-number">6</span>
+    <div class="step-content">
+      <strong>Создавай анкеты</strong>
+      <p>«Анкеты» → «+ Новая анкета» → выбери тип (модель/оператор) → заполни все поля → отправь.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <span class="step-number">7</span>
+    <div class="step-content">
+      <strong>Следи за уведомлениями</strong>
+      <p>Лидер направит анкету, HR обработает. На каждом этапе тебе придёт уведомление. Отвечай в чате, если спрашивают.</p>
+    </div>
+  </div>
+
+  <div class="highlight" style="margin-top: 24px; text-align: center;">
+    <h3 style="margin: 0 0 8px 0; font-size: 20px;">📌 Запомни главное</h3>
+    <p style="font-size: 15px; color: #1a1a2e;">
+      <strong>Находи кандидатов → Заполняй анкеты подробно → Обрабатывай лиды быстро → Следи за уведомлениями</strong>
+    </p>
+    <p style="font-size: 14px; color: #6b7280; margin-top: 8px;">
+      Чем больше качественных анкет — тем выше твой результат, достижения и выплаты.
+    </p>
+  </div>
+
+  <div class="tip" style="margin-top: 20px;">
+    <strong>💡 Вопросы?</strong> Если что-то непонятно — пиши своему Team Leader. Он поможет разобраться.
+  </div>
+</div>
+
+</body>
+</html>

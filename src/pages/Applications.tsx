@@ -372,7 +372,7 @@ export default function Applications() {
                     {app.candidate_telegram && <span>TG: {app.candidate_telegram}</span>}
                     <span>Скаут: {app.scout_name}</span>
                     {app.squad_name && <span>Сквад: {app.squad_name}</span>}
-                    <span>{new Date(app.created_at).toLocaleDateString('ru')}</span>
+                    <span>{new Date(app.created_at).toLocaleDateString('ru', { timeZone: 'Europe/Moscow' })}</span>
                   </div>
                 </div>
                 <ChevronRight size={18} className="text-dark-500" />

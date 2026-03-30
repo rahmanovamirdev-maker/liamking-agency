@@ -76,7 +76,7 @@ export default function Notifications() {
                 <p className="font-medium text-white text-sm">{n.title}</p>
                 <p className="text-sm text-dark-400 mt-0.5">{n.message}</p>
                 <div className="flex items-center gap-3 mt-2">
-                  <span className="text-xs text-dark-500">{new Date(n.created_at).toLocaleString('ru')}</span>
+                  <span className="text-xs text-dark-500">{new Date(n.created_at).toLocaleString('ru', { timeZone: 'Europe/Moscow' })}</span>
                   {n.application_id && (
                     <Link to={`/applications/${n.application_id}`} className="text-xs text-primary-400 hover:underline">
                       Открыть анкету

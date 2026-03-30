@@ -120,7 +120,7 @@ export default function Archive() {
                     </td>
                     <td className="py-2 px-3 text-dark-300">{app.scout_name}</td>
                     <td className="py-2 px-3 text-dark-300">{app.squad_name || '—'}</td>
-                    <td className="py-2 px-3 text-dark-400">{new Date(app.created_at).toLocaleDateString('ru')}</td>
+                    <td className="py-2 px-3 text-dark-400">{new Date(app.created_at).toLocaleDateString('ru', { timeZone: 'Europe/Moscow' })}</td>
                     <td className="py-2 px-3">
                       <div className="flex items-center gap-2">
                         <Link to={`/applications/${app.id}`} className="text-primary-400 hover:text-primary-300">

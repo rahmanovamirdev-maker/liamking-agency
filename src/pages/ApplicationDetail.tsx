@@ -326,7 +326,7 @@ export default function ApplicationDetail() {
                           {getStatusLabel(h.new_status, app.app_type)}
                         </span>
                         <span className="text-xs text-dark-500">{h.user_name}</span>
-                        <span className="text-xs text-dark-600">{new Date(h.created_at).toLocaleString('ru')}</span>
+                        <span className="text-xs text-dark-600">{new Date(h.created_at).toLocaleString('ru', { timeZone: 'Europe/Moscow' })}</span>
                       </div>
                       {h.comment && <p className="text-sm text-dark-300 mt-1">{h.comment}</p>}
                     </div>
@@ -358,8 +358,8 @@ export default function ApplicationDetail() {
                 </div>
               )}
               <div className="flex justify-between"><span className="text-dark-400">Сквад</span><span className="text-white">{app.squad_name || '—'}</span></div>
-              <div className="flex justify-between"><span className="text-dark-400">Создана</span><span className="text-white">{new Date(app.created_at).toLocaleDateString('ru')}</span></div>
-              <div className="flex justify-between"><span className="text-dark-400">Обновлена</span><span className="text-white">{new Date(app.updated_at).toLocaleDateString('ru')}</span></div>
+              <div className="flex justify-between"><span className="text-dark-400">Создана</span><span className="text-white">{new Date(app.created_at).toLocaleDateString('ru', { timeZone: 'Europe/Moscow' })}</span></div>
+              <div className="flex justify-between"><span className="text-dark-400">Обновлена</span><span className="text-white">{new Date(app.updated_at).toLocaleDateString('ru', { timeZone: 'Europe/Moscow' })}</span></div>
             </div>
           </div>
         </div>

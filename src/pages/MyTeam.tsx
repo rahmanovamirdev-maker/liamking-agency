@@ -204,7 +204,7 @@ export default function MyTeam() {
                               <p className="text-sm font-medium text-white truncate">{scout.full_name}</p>
                               {scout.last_app_date && (
                                 <p className="text-[10px] text-dark-500">
-                                  Посл. анкета: {new Date(scout.last_app_date).toLocaleDateString('ru-RU')}
+                                  Посл. анкета: {new Date(scout.last_app_date).toLocaleDateString('ru-RU', { timeZone: 'Europe/Moscow' })}
                                 </p>
                               )}
                             </div>

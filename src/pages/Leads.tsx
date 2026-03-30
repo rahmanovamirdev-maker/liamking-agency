@@ -291,7 +291,7 @@ function ScoutLeads() {
                   <span className={`badge mr-2 ${requestStatusLabels[r.status]?.color}`}>
                     {requestStatusLabels[r.status]?.label}
                   </span>
-                  <span className="text-dark-400">{new Date(r.created_at).toLocaleDateString('ru')}</span>
+                  <span className="text-dark-400">{new Date(r.created_at).toLocaleDateString('ru', { timeZone: 'Europe/Moscow' })}</span>
                   {r.approved_count && <span className="text-emerald-400 ml-2">+{r.approved_count} лидов</span>}
                   {r.comment && <span className="text-dark-500 ml-2">— {r.comment}</span>}
                 </div>
@@ -443,7 +443,7 @@ function AdminLeads() {
                   <div>
                     <p className="font-medium text-white">{r.scout_name}</p>
                     <div className="flex items-center gap-3 text-xs text-dark-500 mt-1">
-                      <span>{new Date(r.created_at).toLocaleString('ru')}</span>
+                      <span>{new Date(r.created_at).toLocaleString('ru', { timeZone: 'Europe/Moscow' })}</span>
                       <span className={`badge ${requestStatusLabels[r.status]?.color}`}>
                         {requestStatusLabels[r.status]?.label}
                       </span>
@@ -561,7 +561,7 @@ function AdminLeads() {
                       <div className="flex items-center gap-3 text-xs text-dark-500 mt-1">
                         {lead.phone && <span><Phone size={10} className="inline mr-1" />{lead.phone}</span>}
                         {lead.telegram && <span>TG: {lead.telegram}</span>}
-                        {lead.assigned_at && <span>Выдан: {new Date(lead.assigned_at).toLocaleDateString('ru')}</span>}
+                        {lead.assigned_at && <span>Выдан: {new Date(lead.assigned_at).toLocaleDateString('ru', { timeZone: 'Europe/Moscow' })}</span>}
                       </div>
                     </div>
                     <span className={`badge ${leadStatusLabels[lead.status]?.color}`}>

@@ -269,7 +269,7 @@ export default function AdminPanel() {
               <div key={p.id} className="card py-3 px-4 flex items-center justify-between">
                 <div>
                   <p className="font-medium text-white">{p.title}</p>
-                  <p className="text-xs text-dark-500">{new Date(p.created_at).toLocaleDateString('ru')} • {p.views} просмотров • {p.comment_count} комментариев</p>
+                  <p className="text-xs text-dark-500">{new Date(p.created_at).toLocaleDateString('ru', { timeZone: 'Europe/Moscow' })} • {p.views} просмотров • {p.comment_count} комментариев</p>
                 </div>
                 <button onClick={() => deletePost(p.id)} className="p-1.5 text-dark-400 hover:text-red-400 transition">
                   <Trash2 size={14} />
@@ -290,7 +290,7 @@ export default function AdminPanel() {
             <div className="space-y-2">
               {logs.map(l => (
                 <div key={l.id} className="p-2 bg-dark-800 rounded text-sm">
-                  <span className="text-dark-400">{new Date(l.created_at).toLocaleString('ru')}</span>
+                  <span className="text-dark-400">{new Date(l.created_at).toLocaleString('ru', { timeZone: 'Europe/Moscow' })}</span>
                   <span className="text-white ml-2">{l.user_name}: {l.action}</span>
                   {l.details && <span className="text-dark-500 ml-1">{l.details}</span>}
                 </div>

@@ -51,7 +51,7 @@ function AppSection({ title, apps }: { title: string; apps: any[] }) {
             <div>
               <p className="font-medium text-white">{app.candidate_name}</p>
               <p className="text-xs text-dark-500">
-                {app.candidate_phone} • Скаут: {app.scout_name} • {new Date(app.created_at).toLocaleDateString('ru')}
+                {app.candidate_phone} • Скаут: {app.scout_name} • {new Date(app.created_at).toLocaleDateString('ru', { timeZone: 'Europe/Moscow' })}
               </p>
             </div>
             <ChevronRight size={18} className="text-dark-500" />

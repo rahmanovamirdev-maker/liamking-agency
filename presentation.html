@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>LIAMKING AGENCY — Презентация системы</title>
+<style>
+  @page { size: A4; margin: 20mm; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Tahoma, sans-serif; color: #1a1a2e; line-height: 1.6; background: #fff; }
+  
+  .page { page-break-after: always; padding: 40px; min-height: 100vh; }
+  .page:last-child { page-break-after: avoid; }
+
+  /* Cover */
+  .cover { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: linear-gradient(135deg, #0f0f23, #1a1a3e); color: #fff; }
+  .cover .logo { width: 100px; height: 100px; background: linear-gradient(135deg, #6366f1, #8b5cf6); border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 900; color: #fff; margin-bottom: 30px; box-shadow: 0 20px 60px rgba(99,102,241,0.4); }
+  .cover h1 { font-size: 48px; font-weight: 800; letter-spacing: 2px; }
+  .cover .subtitle { font-size: 20px; color: #a5b4fc; margin-top: 10px; }
+  .cover .date { margin-top: 40px; color: #6b7280; font-size: 14px; }
+
+  /* Section headers */
+  h2 { font-size: 28px; color: #1a1a2e; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 3px solid #6366f1; }
+  h3 { font-size: 18px; color: #4338ca; margin: 20px 0 10px; }
+  h4 { font-size: 15px; color: #6366f1; margin: 12px 0 6px; }
+
+  p, li { font-size: 14px; }
+  ul { padding-left: 20px; margin: 8px 0; }
+  li { margin: 4px 0; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 13px; }
+  th { background: #6366f1; color: #fff; padding: 10px 12px; text-align: left; font-weight: 600; }
+  td { padding: 8px 12px; border-bottom: 1px solid #e5e7eb; }
+  tr:nth-child(even) { background: #f8fafc; }
+  tr:hover { background: #eef2ff; }
+
+  /* Flow diagram */
+  .flow { background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; margin: 15px 0; font-family: 'Consolas', monospace; font-size: 13px; line-height: 1.8; white-space: pre-wrap; }
+
+  /* Cards */
+  .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 15px 0; }
+  .card { background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; }
+  .card-title { font-weight: 700; color: #4338ca; font-size: 15px; margin-bottom: 6px; }
+  .card p { font-size: 13px; color: #4b5563; }
+
+  /* Badge */
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .badge-purple { background: #ede9fe; color: #6d28d9; }
+  .badge-green { background: #d1fae5; color: #065f46; }
+  .badge-blue { background: #dbeafe; color: #1e40af; }
+  .badge-amber { background: #fef3c7; color: #92400e; }
+  .badge-red { background: #fee2e2; color: #991b1b; }
+  .badge-gray { background: #f3f4f6; color: #374151; }
+
+  /* Status flow */
+  .status-flow { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; align-items: center; }
+  .status-box { padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; }
+  .arrow { color: #9ca3af; font-size: 18px; }
+
+  .note { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 12px 0; font-size: 13px; }
+
+  .section-number { display: inline-block; width: 32px; height: 32px; background: #6366f1; color: #fff; border-radius: 50%; text-align: center; line-height: 32px; font-weight: 700; font-size: 16px; margin-right: 10px; }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="page cover">
+  <div class="logo">LK</div>
+  <h1>LIAMKING AGENCY</h1>
+  <p class="subtitle">Система управления агентством</p>
+  <p class="subtitle" style="font-size:16px; margin-top: 5px;">Презентация платформы</p>
+  <p class="date">Март 2026</p>
+</div>
+
+<!-- PAGE 2: О ПРОЕКТЕ -->
+<div class="page">
+  <h2><span class="section-number">1</span> О проекте</h2>
+  <p style="font-size:16px; margin-bottom: 20px;">
+    <strong>LIAMKING AGENCY</strong> — полнофункциональная веб-платформа для управления кадровым агентством. 
+    Система обеспечивает полный цикл работы: от поиска кандидатов до их трудоустройства.
+  </p>
+
+  <h3>Ключевые возможности</h3>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-title">📋 Управление анкетами</div>
+      <p>Создание, направление и обработка анкет кандидатов (модели и операторы)</p>
+    </div>
+    <div class="card">
+      <div class="card-title">👥 Командная иерархия</div>
+      <p>Сквады → Команды → Скауты. Полное управление структурой</p>
+    </div>
+    <div class="card">
+      <div class="card-title">📱 БД Лидов</div>
+      <p>Пул лидов, массовая загрузка, касания, распределение между скаутами</p>
+    </div>
+    <div class="card">
+      <div class="card-title">💬 Внутренний чат</div>
+      <p>Чат по каждой анкете между участниками процесса</p>
+    </div>
+    <div class="card">
+      <div class="card-title">📊 Аналитика</div>
+      <p>Статистика по сквадам, агентам, конверсия, топ-рейтинги</p>
+    </div>
+    <div class="card">
+      <div class="card-title">🏆 Геймификация</div>
+      <p>Достижения, прогресс-бары, таблица лидеров</p>
+    </div>
+    <div class="card">
+      <div class="card-title">🔔 Уведомления</div>
+      <p>Мгновенные уведомления со звуком при важных событиях</p>
+    </div>
+    <div class="card">
+      <div class="card-title">📰 Новости</div>
+      <p>Лента новостей с закреплёнными постами и комментариями</p>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 3: РОЛИ -->
+<div class="page">
+  <h2><span class="section-number">2</span> Роли и уровни доступа</h2>
+  
+  <table>
+    <tr>
+      <th>Роль</th>
+      <th>Описание</th>
+      <th>Основные возможности</th>
+    </tr>
+    <tr>
+      <td><strong>Owner</strong><br><span class="badge badge-purple">Владелец</span></td>
+      <td>Полный контроль над системой</td>
+      <td>Всё: пользователи, сквады, посты, направление анкет, удаление, логи</td>
+    </tr>
+    <tr>
+      <td><strong>Team Leader</strong><br><span class="badge badge-blue">Сквад Лидер</span></td>
+      <td>Руководитель сквада</td>
+      <td>Управление командой, направление анкет, распределение лидов, Admin Panel</td>
+    </tr>
+    <tr>
+      <td><strong>Admin</strong><br><span class="badge badge-green">Админ</span></td>
+      <td>Помощник в управлении</td>
+      <td>Просмотр анкет своей команды, БД Лидов (только свои), статистика</td>
+    </tr>
+    <tr>
+      <td><strong>Curator</strong><br><span class="badge badge-amber">Куратор</span></td>
+      <td>Контроль этапа собеседований</td>
+      <td>Панель Куратора, просмотр записанных и пришедших на собеседование</td>
+    </tr>
+    <tr>
+      <td><strong>HR</strong><br><span class="badge badge-gray">HR Менеджер</span></td>
+      <td>Работа с назначенными анкетами</td>
+      <td>Просмотр только назначенных анкет, чат, статистика</td>
+    </tr>
+    <tr>
+      <td><strong>HR HuntMe</strong><br><span class="badge badge-purple">HR HuntMe</span></td>
+      <td>HR по направлению HuntMe</td>
+      <td>Все HuntMe-анкеты, смена статусов, чат, уведомления</td>
+    </tr>
+    <tr>
+      <td><strong>HR Mason</strong><br><span class="badge badge-amber">HR Mason</span></td>
+      <td>HR по направлению Mason</td>
+      <td>Все Mason-анкеты, смена статусов, чат, уведомления</td>
+    </tr>
+    <tr>
+      <td><strong>Scout</strong><br><span class="badge badge-green">Скаут</span></td>
+      <td>Поиск и привлечение кандидатов</td>
+      <td>Создание анкет, работа с лидами, запрос лидов, чат</td>
+    </tr>
+  </table>
+</div>
+
+<!-- PAGE 4: ДОСТУП К РАЗДЕЛАМ -->
+<div class="page">
+  <h2><span class="section-number">3</span> Матрица доступа к разделам</h2>
+  
+  <table>
+    <tr>
+      <th>Раздел</th>
+      <th style="text-align:center">Owner</th>
+      <th style="text-align:center">Team Leader</th>
+      <th style="text-align:center">Admin</th>
+      <th style="text-align:center">Curator</th>
+      <th style="text-align:center">HR</th>
+      <th style="text-align:center">HR HuntMe</th>
+      <th style="text-align:center">HR Mason</th>
+      <th style="text-align:center">Scout</th>
+    </tr>
+    <tr><td>Главная</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td></tr>
+    <tr><td>Анкеты</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">—</td><td style="text-align:center">✅</td></tr>
+    <tr><td>HuntMe</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center">✅</td><td style="text-align:center">—</td><td style="text-align:center">—</td></tr>
+    <tr><td>Mason</td><td style="text-align:center">✅</td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center">✅</td><td style="text-align:center">—</td></tr>
+    <tr><td>Команды</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">—</td><td style="text-align:center">✅</td></tr>
+    <tr><td>Статистика</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">—</td><td style="text-align:center">✅</td></tr>
+    <tr><td>Моя Команда</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center">—</td></tr>
+    <tr><td>БД Лидов</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center">✅</td></tr>
+    <tr><td>Архив</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">—</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">—</td><td style="text-align:center">—</td></tr>
+    <tr><td>Достижения</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">—</td><td style="text-align:center">✅</td></tr>
+    <tr><td>Уведомления</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td></tr>
+    <tr><td>Панель Куратора</td><td style="text-align:center">✅</td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center">✅</td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center">—</td></tr>
+    <tr><td>Admin Panel</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center">—</td></tr>
+    <tr><td>Профиль</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td></tr>
+  </table>
+</div>
+
+<!-- PAGE 5: ЖИЗНЕННЫЙ ЦИКЛ АНКЕТЫ -->
+<div class="page">
+  <h2><span class="section-number">4</span> Жизненный цикл анкеты</h2>
+  
+  <h3>Типы анкет</h3>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-title">👩 Модель</div>
+      <p>Имя, возраст, телефон, Telegram, как представились, вакансия, языки, роль, Nude/No-Nude, описание, фото</p>
+    </div>
+    <div class="card">
+      <div class="card-title">🖥️ Оператор</div>
+      <p>Имя, возраст, телефон, Telegram, компания, уровень английского, опыт, характеристики ПК</p>
+    </div>
+  </div>
+
+  <h3>Этапы обработки</h3>
+  <div class="flow">
+<strong>1. СОЗДАНИЕ</strong> (Скаут)
+   Скаут заполняет анкету → статус: <span class="badge badge-amber">На рассмотрении</span>
+         ↓
+<strong>2. НАПРАВЛЕНИЕ</strong> (Owner / Team Leader)
+   Проверяет анкету и направляет на партнёра:
+   → <span class="badge badge-purple">HuntMe</span> или <span class="badge badge-amber">Mason</span> → статус: <span class="badge badge-blue">Направлена</span>
+   → или <span class="badge badge-red">Отклоняет</span>
+         ↓
+<strong>3. ОБРАБОТКА HR</strong> (HR HuntMe / HR Mason)
+   HR получает уведомление и ведёт кандидата:
+   
+   HuntMe (модель):  записана → собеседование → регистрация → активна
+   HuntMe (оператор): записана → собеседование → обучение
+   Mason:             игнор → собеседование → регистрация
+         ↓
+<strong>4. РЕЗУЛЬТАТ</strong>
+   ✅ Регистрация / Активен — кандидат трудоустроен
+   ❌ Отказ — с указанием причины
+   ⚠️ Не пришёл / Игнор — собеседование не состоялось</div>
+
+  <div class="note">
+    <strong>💡 Важно:</strong> На каждом этапе скаут получает уведомление об изменении статуса. 
+    К каждой анкете привязан чат для коммуникации между участниками.
+  </div>
+</div>
+
+<!-- PAGE 6: КОМАНДЫ -->
+<div class="page">
+  <h2><span class="section-number">5</span> Командная иерархия</h2>
+  
+  <div class="flow" style="font-size: 15px; line-height: 2;">
+<strong>🏢 СКВАД</strong> (возглавляет Squad Admin / Owner)
+│
+├── <strong>👥 КОМАНДА 1</strong>
+│   ├── Лидер: Team Leader
+│   ├── Скаут 1
+│   ├── Скаут 2
+│   └── Скаут 3
+│
+├── <strong>👥 КОМАНДА 2</strong>
+│   ├── Лидер: Team Leader
+│   ├── Скаут 4
+│   └── Скаут 5
+│
+└── <strong>👥 КОМАНДА 3</strong>
+    ├── Лидер: Admin
+    └── Скаут 6</div>
+
+  <h3>Раздел «Моя Команда» (для Team Leader)</h3>
+  <ul>
+    <li><strong>Сводка по скваду:</strong> всего анкет, зарегистрировано, отклонено, конверсия, активных скаутов</li>
+    <li><strong>По каждой команде:</strong> лидер, участники, статистика</li>
+    <li><strong>По каждому скауту:</strong> ФИО, последняя анкета, общие метрики</li>
+    <li><strong>Фильтр по периоду:</strong> день, неделя, месяц, год, всё время</li>
+  </ul>
+
+  <h3>Раздел «Команды» (общий)</h3>
+  <ul>
+    <li>Иерархическое дерево всех сквадов и команд</li>
+    <li>Owner/Team Leader могут создавать сквады и команды</li>
+    <li>Назначение лидеров и добавление участников</li>
+  </ul>
+</div>
+
+<!-- PAGE 7: ЛИДЫ -->
+<div class="page">
+  <h2><span class="section-number">6</span> База данных лидов</h2>
+
+  <h3>Для Owner</h3>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-title">📦 Пул лидов</div>
+      <p>Нераспределённые лиды, доступные для назначения скаутам</p>
+    </div>
+    <div class="card">
+      <div class="card-title">📤 Загрузка</div>
+      <p>Массовый импорт лидов из CSV/TXT (имя, телефон, Telegram, источник)</p>
+    </div>
+    <div class="card">
+      <div class="card-title">👆 Касания 1-4</div>
+      <p>Отслеживание попыток контакта: 1 (жёлтый) → 2 (оранжевый) → 3 (красный) → 4+ (мусор)</p>
+    </div>
+    <div class="card">
+      <div class="card-title">➕ Создание</div>
+      <p>Ручное добавление лидов (имя, телефон, Telegram, источник)</p>
+    </div>
+  </div>
+
+  <h3>Для Скаута / Admin</h3>
+  <ul>
+    <li><strong>Мои лиды</strong> — список назначенных лидов с возможностью менять статус</li>
+    <li><strong>Статусы лида:</strong> Новый → В работе → Связался → Обработан / Отказ / Игнор</li>
+    <li><strong>Запрос лидов</strong> — скаут может запросить дополнительные лиды у Team Leader</li>
+    <li><strong>История заявок</strong> — статус: ожидает / одобрена / отклонена (с комментарием)</li>
+  </ul>
+
+  <h3>Для Team Leader</h3>
+  <ul>
+    <li><strong>Заявки на лиды</strong> — одобрение/отклонение запросов скаутов</li>
+    <li><strong>Просмотр скаутов</strong> — статистика по лидам каждого скаута</li>
+    <li><strong>Назначение лидов</strong> — распределение из пула</li>
+  </ul>
+</div>
+
+<!-- PAGE 8: HR НАПРАВЛЕНИЯ -->
+<div class="page">
+  <h2><span class="section-number">7</span> Направления: HuntMe и Mason</h2>
+
+  <div class="card-grid">
+    <div class="card" style="border-left: 4px solid #8b5cf6;">
+      <div class="card-title" style="color: #7c3aed;">⚡ HuntMe</div>
+      <p><strong>Доступ:</strong> Owner, Team Leader, HR HuntMe</p>
+      <p style="margin-top: 8px;"><strong>Статусы модели:</strong></p>
+      <p>Записана → Собеседование → Регистрация → Активна</p>
+      <p>Не пришла / Игнор / Отказ</p>
+      <p style="margin-top: 8px;"><strong>Статусы оператора:</strong></p>
+      <p>Записан → Собеседование → Обучение / Отказ</p>
+    </div>
+    <div class="card" style="border-left: 4px solid #f59e0b;">
+      <div class="card-title" style="color: #d97706;">💎 Mason</div>
+      <p><strong>Доступ:</strong> Owner, HR Mason</p>
+      <p style="margin-top: 8px;"><strong>Статусы (модель и оператор):</strong></p>
+      <p>Игнор → Собеседование пришёл → Регистрация</p>
+      <p>Не пришёл / Отказ</p>
+    </div>
+  </div>
+
+  <h3>Панель Куратора</h3>
+  <p>Куратор видит две группы анкет:</p>
+  <ul>
+    <li><strong>Записанные</strong> — ожидают собеседования</li>
+    <li><strong>На собеседовании</strong> — кандидат пришёл, ожидается решение</li>
+  </ul>
+
+  <h3>Архив</h3>
+  <ul>
+    <li>Таблица всех анкет с пагинацией (по 50 на странице)</li>
+    <li>Поиск и фильтрация по статусу</li>
+    <li>Owner может удалять анкеты безвозвратно</li>
+  </ul>
+</div>
+
+<!-- PAGE 9: СТАТИСТИКА И ДОСТИЖЕНИЯ -->
+<div class="page">
+  <h2><span class="section-number">8</span> Аналитика и достижения</h2>
+
+  <h3>Статистика</h3>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-title">📊 Общая</div>
+      <p>Всего анкет, зарегистрировано, отклонено, конверсия %. Разбивка по статусам.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">🏢 По сквадам</div>
+      <p>Таблица: сквад, анкеты, регистрации, отклонения, конверсия</p>
+    </div>
+    <div class="card">
+      <div class="card-title">🏆 Топ агентов</div>
+      <p>Рейтинг лучших скаутов за выбранный период</p>
+    </div>
+    <div class="card">
+      <div class="card-title">👤 Личная</div>
+      <p>Анкеты, регистрации, результаты за неделю/месяц/год</p>
+    </div>
+  </div>
+
+  <h3>Система достижений</h3>
+  <table>
+    <tr>
+      <th>Категория</th>
+      <th>Описание</th>
+      <th>Примеры</th>
+    </tr>
+    <tr>
+      <td>🎯 Анкеты</td>
+      <td>По количеству созданных анкет</td>
+      <td>5, 25, 100, 500 анкет</td>
+    </tr>
+    <tr>
+      <td>⭐ Регистрации</td>
+      <td>По успешным регистрациям</td>
+      <td>Первая регистрация, 10, 50 регистраций</td>
+    </tr>
+    <tr>
+      <td>🔥 Лиды</td>
+      <td>По обработке лидов</td>
+      <td>10, 50, 200 обработанных лидов</td>
+    </tr>
+    <tr>
+      <td>🏅 Активность</td>
+      <td>По стрикам и вовлечённости</td>
+      <td>7 дней подряд, 30 дней активности</td>
+    </tr>
+  </table>
+  <p style="margin-top: 10px;">Включает прогресс-бары и <strong>таблицу лидеров</strong> — топ-10 пользователей по достижениям.</p>
+</div>
+
+<!-- PAGE 10: КОММУНИКАЦИЯ -->
+<div class="page">
+  <h2><span class="section-number">9</span> Коммуникация</h2>
+
+  <h3>Чат по анкете</h3>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-title">👥 Участники</div>
+      <p>Скаут, Админ, Куратор, HR — все, кто привязан к анкете. Owner видит все чаты.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">📎 Файлы</div>
+      <p>Отправка изображений (превью) и документов (PDF, Word) до 5 МБ</p>
+    </div>
+    <div class="card">
+      <div class="card-title">🔄 Обновление</div>
+      <p>Автоматическое обновление каждые 5 секунд. Группировка по датам.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">🎨 Роли в чате</div>
+      <p>Каждый участник отмечен цветной меткой роли для удобства</p>
+    </div>
+  </div>
+
+  <h3>Уведомления</h3>
+  <table>
+    <tr>
+      <th>Событие</th>
+      <th>Кто получает</th>
+    </tr>
+    <tr>
+      <td>Скаут создал анкету</td>
+      <td>Team Leader сквада</td>
+    </tr>
+    <tr>
+      <td>Анкета направлена на HuntMe/Mason</td>
+      <td>Скаут + все HR этого направления</td>
+    </tr>
+    <tr>
+      <td>HR изменил статус анкеты</td>
+      <td>Скаут</td>
+    </tr>
+    <tr>
+      <td>Новое сообщение в чате</td>
+      <td>Все участники анкеты (кроме отправителя)</td>
+    </tr>
+    <tr>
+      <td>Скаут запросил лиды</td>
+      <td>Team Leader</td>
+    </tr>
+    <tr>
+      <td>Заявка на лиды одобрена/отклонена</td>
+      <td>Скаут</td>
+    </tr>
+  </table>
+
+  <div class="note">
+    <strong>🔔 Звук:</strong> При поступлении нового уведомления прозвучит мелодичный двойной тон. 
+    Счётчик непрочитанных отображается в боковом меню рядом с «Уведомления».
+  </div>
+</div>
+
+<!-- PAGE 11: ADMIN PANEL -->
+<div class="page">
+  <h2><span class="section-number">10</span> Администрирование</h2>
+
+  <h3>Admin Panel (Owner / Team Leader)</h3>
+  
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-title">👤 Пользователи</div>
+      <p>Создание, редактирование, деактивация. Назначение ролей (множественный выбор), привязка к скваду/команде.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">🏢 Сквады</div>
+      <p>Создание сквадов, назначение Squad Admin, редактирование.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">📰 Посты</div>
+      <p>Создание новостей, закрепление постов, удаление. Видны всем на главной.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">📋 Логи</div>
+      <p>История всех действий в системе для аудита и контроля.</p>
+    </div>
+  </div>
+
+  <h3>Профиль (для всех)</h3>
+  <ul>
+    <li><strong>Просмотр:</strong> ФИО, роли, сквад, команда, дата регистрации</li>
+    <li><strong>Статистика:</strong> анкеты, регистрации, за неделю/месяц</li>
+    <li><strong>Редактирование:</strong> ФИО, описание о себе, кошелёк для выплат (TRC20)</li>
+    <li><strong>Безопасность:</strong> смена пароля (минимум 6 символов)</li>
+  </ul>
+
+  <h3 style="margin-top: 30px;">Техническая информация</h3>
+  <table>
+    <tr><th>Компонент</th><th>Технология</th></tr>
+    <tr><td>Frontend</td><td>React + TypeScript + Tailwind CSS + Framer Motion</td></tr>
+    <tr><td>Backend</td><td>Node.js + Express</td></tr>
+    <tr><td>База данных</td><td>SQLite (better-sqlite3)</td></tr>
+    <tr><td>Хостинг</td><td>DigitalOcean VPS + Nginx + PM2</td></tr>
+    <tr><td>Авторизация</td><td>JWT-токены</td></tr>
+    <tr><td>Адаптивность</td><td>Полная мобильная адаптация</td></tr>
+  </table>
+</div>
+
+</body>
+</html>

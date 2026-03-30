@@ -128,7 +128,7 @@ export default function ApplicationChat({ applicationId, hasAccess }: Applicatio
 
   function formatTime(dateStr: string) {
     const d = new Date(dateStr);
-    return d.toLocaleTimeString('ru', { hour: '2-digit', minute: '2-digit' });
+    return d.toLocaleTimeString('ru', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Moscow' });
   }
 
   function formatDate(dateStr: string) {
@@ -138,7 +138,7 @@ export default function ApplicationChat({ applicationId, hasAccess }: Applicatio
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
     if (d.toDateString() === yesterday.toDateString()) return 'Вчера';
-    return d.toLocaleDateString('ru', { day: 'numeric', month: 'long' });
+    return d.toLocaleDateString('ru', { day: 'numeric', month: 'long', timeZone: 'Europe/Moscow' });
   }
 
   // Group messages by date

@@ -45,7 +45,7 @@ export default function PostDetail() {
         <h1 className="text-2xl font-bold text-white">{post.title}</h1>
         <div className="flex items-center gap-4 mt-2 text-sm text-dark-500">
           <span>{post.author_name}</span>
-          <span>{new Date(post.created_at).toLocaleString('ru')}</span>
+          <span>{new Date(post.created_at).toLocaleString('ru', { timeZone: 'Europe/Moscow' })}</span>
           <span className="flex items-center gap-1"><Eye size={14} /> {post.views}</span>
         </div>
         <div className="mt-6 text-dark-200 whitespace-pre-wrap leading-relaxed">{post.content}</div>
@@ -66,7 +66,7 @@ export default function PostDetail() {
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium text-white">{c.user_name}</span>
-                <span className="text-xs text-dark-500">{new Date(c.created_at).toLocaleString('ru')}</span>
+                <span className="text-xs text-dark-500">{new Date(c.created_at).toLocaleString('ru', { timeZone: 'Europe/Moscow' })}</span>
               </div>
               <p className="text-sm text-dark-300 mt-1">{c.content}</p>
             </div>
