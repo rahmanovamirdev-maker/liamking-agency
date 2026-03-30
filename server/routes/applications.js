@@ -338,20 +338,18 @@ router.put('/:id/status', authMiddleware, (req, res) => {
     // Owner can do anything
     if (userHasRole(req.user, 'owner')) {
       // allowed
+    } else if (userHasRole(req.user, 'hr_huntme') && app.direction === 'huntme') {
+      const allowed = directionStatuses.huntme[app.app_type] || [];
+      if (!allowed.includes(status)) return res.status(400).json({ error: 'Недопустимый статус для данного направления' });
+    } else if (userHasRole(req.user, 'hr_mason') && app.direction === 'mason') {
+      const allowed = directionStatuses.mason[app.app_type] || [];
+      if (!allowed.includes(status)) return res.status(400).json({ error: 'Недопустимый статус для данного направления' });
     } else if (userHasRole(req.user, 'team_leader')) {
       if (app.status === 'pending_review' && status === 'rejected') {
         // allowed
       } else {
-        return res.status(403).json({ error: 'Админ может только отклонить анкету на рассмотрении' });
+        return res.status(403).json({ error: 'Сквад Лидер может только отклонить анкету на рассмотрении' });
       }
-    } else if (userHasRole(req.user, 'hr_huntme')) {
-      if (app.direction !== 'huntme') return res.status(403).json({ error: 'Нет доступа к этому направлению' });
-      const allowed = directionStatuses.huntme[app.app_type] || [];
-      if (!allowed.includes(status)) return res.status(400).json({ error: 'Недопустимый статус для данного направления' });
-    } else if (userHasRole(req.user, 'hr_mason')) {
-      if (app.direction !== 'mason') return res.status(403).json({ error: 'Нет доступа к этому направлению' });
-      const allowed = directionStatuses.mason[app.app_type] || [];
-      if (!allowed.includes(status)) return res.status(400).json({ error: 'Недопустимый статус для данного направления' });
     } else {
       return res.status(403).json({ error: 'Недостаточно прав' });
     }
