@@ -45,7 +45,7 @@ export default function App() {
           <ProtectedRoute roles={['owner', 'hr_mason']}><Mason /></ProtectedRoute>
         } />
         <Route path="leads" element={
-          <ProtectedRoute roles={['owner', 'team_leader', 'scout']}><Leads /></ProtectedRoute>
+          <ProtectedRoute roles={['owner', 'team_leader', 'admin', 'scout']}><Leads /></ProtectedRoute>
         } />
         <Route path="archive" element={
           <ProtectedRoute roles={['owner', 'team_leader', 'curator', 'hr', 'hr_huntme']}><Archive /></ProtectedRoute>

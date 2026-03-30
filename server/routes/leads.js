@@ -19,7 +19,7 @@ router.get('/', authMiddleware, (req, res) => {
     const conditions = [];
     const params = [];
 
-    if (userHasRole(req.user, 'scout') && !userHasRole(req.user, 'owner', 'team_leader')) {
+    if ((userHasRole(req.user, 'scout') || userHasRole(req.user, 'admin')) && !userHasRole(req.user, 'owner', 'team_leader')) {
       conditions.push('l.scout_id = ?');
       params.push(req.user.id);
     } else if (pool === '1') {

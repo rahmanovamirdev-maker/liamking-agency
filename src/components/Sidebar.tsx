@@ -28,7 +28,7 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
     { to: '/my-team', icon: UsersRound, label: 'Моя команда', roles: ['owner', 'team_leader'] },
     { to: '/huntme', icon: Zap, label: 'HuntMe', roles: ['owner', 'team_leader', 'hr_huntme'] },
     { to: '/mason', icon: Gem, label: 'Mason', roles: ['owner', 'hr_mason'] },
-    { to: '/leads', icon: Database, label: 'БД Лидов', roles: ['owner', 'team_leader', 'scout'] },
+    { to: '/leads', icon: Database, label: 'БД Лидов', roles: ['owner', 'team_leader', 'admin', 'scout'] },
     { to: '/archive', icon: Archive, label: 'Архив', roles: ['owner', 'team_leader', 'curator', 'hr', 'hr_huntme'] },
     { to: '/achievements', icon: Trophy, label: 'Достижения', roles: ['owner', 'team_leader', 'admin', 'curator', 'hr', 'hr_huntme', 'scout'] },
     { to: '/notifications', icon: Bell, label: 'Уведомления', roles: ['owner', 'team_leader', 'admin', 'curator', 'hr', 'hr_huntme', 'hr_mason', 'scout'] },

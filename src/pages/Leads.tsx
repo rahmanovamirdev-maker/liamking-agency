@@ -28,8 +28,7 @@ export default function Leads() {
 
   if (hasRole(user, 'owner')) return <OwnerLeads />;
   if (hasRole(user, 'team_leader')) return <AdminLeads />;
-  if (hasRole(user, 'admin')) return <AdminLeads />;
-  if (hasRole(user, 'scout')) return <ScoutLeads />;
+  if (hasRole(user, 'scout') || hasRole(user, 'admin')) return <ScoutLeads />;
   return <div className="text-dark-400">Нет доступа</div>;
 }
 

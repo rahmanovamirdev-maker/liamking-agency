@@ -307,6 +307,14 @@ router.put('/:id/direction', authMiddleware, (req, res) => {
     createNotification(db, app.scout_id, 'status_change', 'Анкета направлена',
       `Анкета "${app.candidate_name}" направлена на ${dirLabel}`, app.id);
 
+    // Notify all HR of the matching direction
+    const hrRole = direction === 'huntme' ? 'hr_huntme' : 'hr_mason';
+    const hrUsers = db.prepare("SELECT id FROM users WHERE role LIKE ? AND is_active = 1").all(`%${hrRole}%`);
+    for (const hr of hrUsers) {
+      createNotification(db, hr.id, 'new_application', 'Новая анкета',
+        `Анкета "${app.candidate_name}" направлена на ${dirLabel}`, app.id);
+    }
+
     saveDatabase();
     res.json({ message: `Анкета направлена на ${dirLabel}` });
   } catch (err) {
