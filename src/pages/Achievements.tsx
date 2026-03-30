@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { api } from '../api/client';
 import { useAuth } from '../contexts/AuthContext';
 import { Trophy, Lock, Star, Flame, Target, Award } from 'lucide-react';
+import { AuthImage } from '../components/AuthImage';
 
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.06 } } };
 const fadeUp = { hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.4 } } };
@@ -179,7 +180,7 @@ export default function Achievements() {
                   </span>
                   <div className="w-9 h-9 rounded-full bg-dark-700 flex items-center justify-center text-white text-sm font-bold overflow-hidden">
                     {u.avatar
-                      ? <img src={u.avatar} alt="" className="w-full h-full object-cover" />
+                      ? <AuthImage src={u.avatar} className="w-full h-full object-cover" />
                       : u.full_name.charAt(0)
                     }
                   </div>

@@ -4,6 +4,33 @@ import { api } from '../api/client';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Paperclip, FileText, Image, X, Download, MessageSquare } from 'lucide-react';
+import { AuthImage, useAuthUrl } from './AuthImage';
+
+function ChatImage({ src, alt }: { src: string; alt: string }) {
+  const blobUrl = useAuthUrl(src);
+  if (!blobUrl) return null;
+  return (
+    <a href={blobUrl} target="_blank" rel="noopener noreferrer">
+      <img src={blobUrl} alt={alt} className="max-w-full max-h-48 rounded-lg cursor-pointer hover:opacity-80 transition" />
+    </a>
+  );
+}
+
+function ChatFileLink({ src, name }: { src: string; name: string }) {
+  const blobUrl = useAuthUrl(src);
+  return (
+    <a
+      href={blobUrl || '#'}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex items-center gap-2 p-2 rounded-lg bg-dark-900/50 hover:bg-dark-900 transition group"
+    >
+      <FileText size={16} className="text-dark-400 shrink-0" />
+      <span className="text-sm text-primary-400 truncate group-hover:underline">{name}</span>
+      <Download size={14} className="text-dark-500 shrink-0" />
+    </a>
+  );
+}
 
 const roleColors: Record<string, string> = {
   owner: 'text-amber-400',
@@ -250,26 +277,9 @@ export default function ApplicationChat({ applicationId, hasAccess }: Applicatio
                                 {msg.file_path && (
                                   <div className="mb-2">
                                     {isImage(msg.file_type) ? (
-                                      <a href={msg.file_path} target="_blank" rel="noopener noreferrer">
-                                        <img
-                                          src={msg.file_path}
-                                          alt={msg.file_name || 'image'}
-                                          className="max-w-full max-h-48 rounded-lg cursor-pointer hover:opacity-80 transition"
-                                        />
-                                      </a>
+                                      <ChatImage src={msg.file_path!} alt={msg.file_name || 'image'} />
                                     ) : (
-                                      <a
-                                        href={msg.file_path}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="flex items-center gap-2 p-2 rounded-lg bg-dark-900/50 hover:bg-dark-900 transition group"
-                                      >
-                                        <FileText size={16} className="text-dark-400 shrink-0" />
-                                        <span className="text-sm text-primary-400 truncate group-hover:underline">
-                                          {msg.file_name}
-                                        </span>
-                                        <Download size={14} className="text-dark-500 shrink-0" />
-                                      </a>
+                                      <ChatFileLink src={msg.file_path!} name={msg.file_name || 'file'} />
                                     )}
                                   </div>
                                 )}

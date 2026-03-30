@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { api } from '../api/client';
 import { useAuth } from '../contexts/AuthContext';
 import { UsersRound, Calendar, TrendingUp, ChevronDown, ChevronRight, User } from 'lucide-react';
+import { AuthImage } from '../components/AuthImage';
 
 const stagger = { hidden: { opacity: 1 }, visible: { opacity: 1, transition: { staggerChildren: 0.08 } } };
 const fadeUp = { hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.4 } } };
@@ -197,7 +198,7 @@ export default function MyTeam() {
                           <div key={scout.id} className="flex items-center gap-3 p-2.5 bg-dark-800 rounded-lg">
                             <div className="w-8 h-8 rounded-full bg-dark-700 flex items-center justify-center text-xs font-bold text-dark-300 shrink-0">
                               {scout.avatar
-                                ? <img src={scout.avatar} className="w-8 h-8 rounded-full object-cover" alt="" />
+                                ? <AuthImage src={scout.avatar} className="w-8 h-8 rounded-full object-cover" />
                                 : <User size={14} />}
                             </div>
                             <div className="flex-1 min-w-0">
