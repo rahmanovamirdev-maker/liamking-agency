@@ -25,10 +25,16 @@ export default function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
         <Route index element={<Home />} />
-        <Route path="applications" element={<Applications />} />
+        <Route path="applications" element={
+          <ProtectedRoute roles={['owner', 'team_leader', 'admin', 'curator', 'hr', 'hr_huntme', 'scout']}><Applications /></ProtectedRoute>
+        } />
         <Route path="applications/:id" element={<ApplicationDetail />} />
-        <Route path="teams" element={<Teams />} />
-        <Route path="statistics" element={<Statistics />} />
+        <Route path="teams" element={
+          <ProtectedRoute roles={['owner', 'team_leader', 'admin', 'curator', 'hr', 'hr_huntme', 'scout']}><Teams /></ProtectedRoute>
+        } />
+        <Route path="statistics" element={
+          <ProtectedRoute roles={['owner', 'team_leader', 'admin', 'curator', 'hr', 'hr_huntme', 'scout']}><Statistics /></ProtectedRoute>
+        } />
         <Route path="my-team" element={
           <ProtectedRoute roles={['owner', 'team_leader']}><MyTeam /></ProtectedRoute>
         } />
@@ -42,9 +48,11 @@ export default function App() {
           <ProtectedRoute roles={['owner', 'team_leader', 'scout']}><Leads /></ProtectedRoute>
         } />
         <Route path="archive" element={
-          <ProtectedRoute roles={['owner', 'team_leader', 'curator', 'hr', 'hr_huntme', 'hr_mason']}><Archive /></ProtectedRoute>
+          <ProtectedRoute roles={['owner', 'team_leader', 'curator', 'hr', 'hr_huntme']}><Archive /></ProtectedRoute>
         } />
-        <Route path="achievements" element={<Achievements />} />
+        <Route path="achievements" element={
+          <ProtectedRoute roles={['owner', 'team_leader', 'admin', 'curator', 'hr', 'hr_huntme', 'scout']}><Achievements /></ProtectedRoute>
+        } />
         <Route path="notifications" element={<Notifications />} />
         <Route path="profile" element={<Profile />} />
         <Route path="admin-panel" element={

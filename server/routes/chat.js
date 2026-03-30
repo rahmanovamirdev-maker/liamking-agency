@@ -58,6 +58,9 @@ function checkChatAccess(db, applicationId, userId, userRole) {
     const admin = db.prepare('SELECT team_id FROM users WHERE id = ?').get(userId);
     if (scout && admin && scout.team_id === admin.team_id) return true;
   }
+  // HR by direction
+  if (userHasRole({ role: userRole }, 'hr_huntme') && app.direction === 'huntme') return true;
+  if (userHasRole({ role: userRole }, 'hr_mason') && app.direction === 'mason') return true;
   return false;
 }
 
