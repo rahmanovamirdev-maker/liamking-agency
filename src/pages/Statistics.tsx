@@ -53,7 +53,7 @@ export default function Statistics() {
       {/* General Stats */}
       {general && (
         <>
-          <motion.div variants={fadeUp} className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <motion.div variants={fadeUp} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             <StatBox label="Всего анкет" value={general.totalApplications} color="text-primary-400" />
             <StatBox label="Зарегистрировано" value={general.registered} color="text-emerald-400" />
             <StatBox label="Отклонено" value={general.rejected} color="text-red-400" />
@@ -63,7 +63,7 @@ export default function Statistics() {
           {/* Status breakdown */}
           <motion.div variants={fadeUp} className="card">
             <h2 className="text-lg font-semibold text-white mb-4">По статусам</h2>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
               {general.byStatus?.map((s: any) => (
                 <div key={s.status} className="bg-dark-800 rounded-lg p-3 text-center">
                   <p className="text-xl font-bold text-white">{s.count}</p>
@@ -146,7 +146,7 @@ export default function Statistics() {
             <TrendingUp size={20} className="inline mr-2 text-emerald-400" />
             Личная статистика
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             <StatBox label="Всего анкет" value={personal.total} color="text-primary-400" />
             <StatBox label="Зарегистрировано" value={personal.registered} color="text-emerald-400" />
             <StatBox label="За неделю" value={personal.thisWeek} color="text-blue-400" />

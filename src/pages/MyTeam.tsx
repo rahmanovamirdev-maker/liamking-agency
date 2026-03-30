@@ -123,7 +123,7 @@ export default function MyTeam() {
 
       {/* Squad Summary */}
       {summary && (
-        <motion.div variants={fadeUp} className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <motion.div variants={fadeUp} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
           <StatBox label="Всего анкет" value={summary.total_apps} color="text-primary-400" />
           <StatBox label="Зарегистрировано" value={summary.registered} color="text-emerald-400" />
           <StatBox label="Отклонено" value={summary.rejected} color="text-red-400" />

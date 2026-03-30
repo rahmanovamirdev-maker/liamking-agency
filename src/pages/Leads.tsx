@@ -419,7 +419,7 @@ function AdminLeads() {
       </motion.div>
 
       {/* Tabs */}
-      <div className="flex gap-2 border-b border-dark-700 pb-2">
+      <div className="flex gap-2 overflow-x-auto border-b border-dark-700 pb-2">
         {[
           { key: 'requests' as const, label: `Заявки (${requests.filter(r => r.status === 'pending').length})` },
           { key: 'scouts' as const, label: 'Мои скауты' },
@@ -531,7 +531,7 @@ function AdminLeads() {
 
           {/* Stats cards */}
           {scoutStats && (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
               {[
                 { label: 'Всего', val: scoutStats.total, color: 'text-white' },
                 { label: 'В работе', val: scoutStats.in_progress, color: 'text-yellow-400' },

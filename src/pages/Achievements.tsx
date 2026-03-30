@@ -126,7 +126,7 @@ export default function Achievements() {
               </div>
             </div>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
             <MiniStat label="Всего анкет" value={data.stats.total_apps} />
             <MiniStat label="Регистрации" value={data.stats.registrations} />
             <MiniStat label="Обраб. лидов" value={data.stats.leads_processed} />

@@ -247,7 +247,7 @@ export default function ApplicationDetail() {
               <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                 <Send size={18} /> Направить на партнёра
               </h2>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <button onClick={() => directToPartner('huntme')}
                   className="p-4 rounded-xl border-2 border-violet-500/30 bg-violet-500/10 hover:bg-violet-500/20 transition text-center">
                   <p className="text-lg font-bold text-violet-400">HuntMe</p>

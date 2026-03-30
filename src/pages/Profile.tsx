@@ -70,7 +70,7 @@ export default function Profile() {
       {stats && (
         <motion.div variants={fadeUp} className="card">
           <h3 className="font-semibold text-white mb-3 flex items-center gap-2"><BarChart3 size={18} /> Моя статистика</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
             <MiniStat label="Всего анкет" value={stats.total} />
             <MiniStat label="Зарегистрировано" value={stats.registered} />
             <MiniStat label="За неделю" value={stats.thisWeek} />

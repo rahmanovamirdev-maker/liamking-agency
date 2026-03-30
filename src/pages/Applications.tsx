@@ -236,7 +236,7 @@ export default function Applications() {
               className="input-field text-sm file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:bg-primary-600 file:text-white file:text-sm file:cursor-pointer" />
             {photoPreview && <img src={photoPreview} alt="Превью" className="mt-2 max-w-[200px] rounded-lg" />}
           </div>
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3">
             <button type="submit" className="btn-primary">Отправить анкету</button>
             <button type="button" onClick={() => { setFormType(''); }} className="btn-secondary">Назад</button>
             <button type="button" onClick={() => setShowForm(false)} className="btn-secondary">Отмена</button>
@@ -301,7 +301,7 @@ export default function Applications() {
                 className="input-field" rows={2} placeholder="Видеокарта, Процессор, скорость интернета..." />
             </div>
           </div>
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3">
             <button type="submit" className="btn-primary">Отправить анкету</button>
             <button type="button" onClick={() => setFormType('')} className="btn-secondary">Назад</button>
             <button type="button" onClick={() => setShowForm(false)} className="btn-secondary">Отмена</button>
