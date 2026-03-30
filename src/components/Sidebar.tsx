@@ -1,6 +1,7 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
+import { useNotifications } from '../contexts/NotificationContext';
 import {
   Home, FileText, Users, BarChart3, Archive, Database,
   Bell, User, Shield, UserCheck, LogOut, Zap, Gem, UsersRound, Trophy
@@ -17,6 +18,7 @@ function formatRoles(roles: string[]): string {
 export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const { unreadCount } = useNotifications();
 
   if (!user) return null;
 
@@ -95,6 +97,11 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
             >
               <item.icon size={18} />
               {item.label}
+              {item.to === '/notifications' && unreadCount > 0 && (
+                <span className="ml-auto bg-primary-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                  {unreadCount > 9 ? '9+' : unreadCount}
+                </span>
+              )}
             </NavLink>
           </motion.div>
         ))}

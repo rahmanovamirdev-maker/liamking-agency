@@ -3,12 +3,10 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import Sidebar from './Sidebar';
 import { Menu, X } from 'lucide-react';
-import { useNotificationSound } from '../hooks/useNotificationSound';
 
 export default function Layout() {
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  useNotificationSound();
 
   return (
     <div className="flex min-h-screen bg-dark-950">

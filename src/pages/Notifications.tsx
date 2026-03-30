@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { api } from '../api/client';
+import { useNotifications } from '../contexts/NotificationContext';
 import toast from 'react-hot-toast';
 import { Bell, Check, CheckCheck, FileText } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -7,6 +8,7 @@ import { Link } from 'react-router-dom';
 export default function Notifications() {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const { refresh } = useNotifications();
 
   useEffect(() => { loadNotifications(); }, []);
 
@@ -22,6 +24,7 @@ export default function Notifications() {
     try {
       await api.put(`/notifications/${id}/read`, {});
       setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: 1 } : n));
+      refresh();
     } catch { /* ignore */ }
   }
 
@@ -29,6 +32,7 @@ export default function Notifications() {
     try {
       await api.put('/notifications/read-all', {});
       setNotifications(prev => prev.map(n => ({ ...n, is_read: 1 })));
+      refresh();
       toast.success('Все прочитано');
     } catch { /* ignore */ }
   }

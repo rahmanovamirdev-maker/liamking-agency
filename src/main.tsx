@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import { AuthProvider } from './contexts/AuthContext';
+import { NotificationProvider } from './contexts/NotificationContext';
 import { Toaster } from 'react-hot-toast';
 import './index.css';
 
@@ -10,6 +11,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <BrowserRouter>
       <AuthProvider>
+        <NotificationProvider>
         <App />
         <Toaster
           position="top-right"
@@ -17,6 +19,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             style: { background: '#1c2128', color: '#e6edf3', border: '1px solid #30363d' },
           }}
         />
+        </NotificationProvider>
       </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>
