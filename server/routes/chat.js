@@ -144,7 +144,7 @@ router.post('/:applicationId/upload', authMiddleware, (req, res) => {
 
     try {
       const message = req.body.message || '';
-      const filePath = `/uploads/chat/${req.file.filename}`;
+      const filePath = `/api/uploads/chat/${req.file.filename}`;
 
       const result = db.prepare(
         'INSERT INTO application_messages (application_id, user_id, message, file_name, file_path, file_type) VALUES (?, ?, ?, ?, ?, ?)'

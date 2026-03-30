@@ -14,7 +14,7 @@ app.use(express.json({ limit: '10mb' }));
 
 // Protected static file serving for uploads
 const { authMiddleware } = require('./middleware/auth');
-app.use('/uploads', authMiddleware, express.static(path.join(__dirname, '..', 'uploads')));
+app.use('/api/uploads', authMiddleware, express.static(path.join(__dirname, '..', 'uploads')));
 
 // API Routes
 app.use('/api/auth', require('./routes/auth'));

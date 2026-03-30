@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 
 function getAuthUrl(src: string): Promise<string> {
   const token = localStorage.getItem('token');
-  return fetch(src, {
+  const url = src.startsWith('/uploads/') ? '/api' + src : src;
+  return fetch(url, {
     headers: token ? { Authorization: `Bearer ${token}` } : {},
   })
     .then(res => {
