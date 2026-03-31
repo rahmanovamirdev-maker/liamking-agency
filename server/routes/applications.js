@@ -15,7 +15,7 @@ function createNotification(db, userId, type, title, message, applicationId) {
 const directionStatuses = {
   huntme: {
     model: ['recorded', 'interview_came', 'registration', 'active', 'interview_noshow', 'rejected', 'interview_ignored'],
-    operator: ['recorded', 'interview_came', 'training', 'rejected', 'interview_ignored'],
+    operator: ['recorded', 'interview_came', 'interview_noshow', 'training', 'rejected', 'interview_ignored'],
   },
   mason: {
     model: ['ignored', 'interview_came', 'interview_noshow', 'registration', 'rejected'],
