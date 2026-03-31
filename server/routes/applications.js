@@ -227,6 +227,28 @@ router.post('/', authMiddleware, (req, res) => {
 
   const db = getDb();
   try {
+    // Duplicate check by phone or telegram
+    const dupeConditions = [];
+    const dupeValues = [];
+    if (candidate_phone) {
+      dupeConditions.push('candidate_phone = ?');
+      dupeValues.push(candidate_phone);
+    }
+    if (candidate_telegram) {
+      dupeConditions.push('candidate_telegram = ?');
+      dupeValues.push(candidate_telegram);
+    }
+    if (dupeConditions.length > 0) {
+      const existing = db.prepare(
+        `SELECT id, candidate_name, status FROM applications WHERE (${dupeConditions.join(' OR ')}) AND status NOT IN ('rejected') LIMIT 1`
+      ).get(...dupeValues);
+      if (existing) {
+        return res.status(409).json({
+          error: `Дубликат: анкета на "${existing.candidate_name}" уже существует (ID: ${existing.id})`
+        });
+      }
+    }
+
     const scout = db.prepare('SELECT squad_id FROM users WHERE id = ?').get(req.user.id);
     const squadId = scout?.squad_id || null;
 
