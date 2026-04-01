@@ -23,7 +23,7 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   if (!user) return null;
 
   const navItems = [
-    { to: '/', icon: Home, label: 'Главная', roles: ['owner', 'team_leader', 'admin', 'curator', 'hr', 'hr_huntme', 'hr_mason', 'scout'] },
+    { to: '/', icon: Home, label: 'Главная', roles: ['owner', 'team_leader', 'admin', 'curator', 'hr', 'hr_huntme', 'scout'] },
     { to: '/applications', icon: FileText, label: 'Анкеты', roles: ['owner', 'team_leader', 'admin', 'curator', 'hr', 'hr_huntme', 'scout'] },
     { to: '/teams', icon: Users, label: 'Команды', roles: ['owner', 'team_leader', 'admin', 'curator', 'hr', 'hr_huntme', 'scout'] },
     { to: '/statistics', icon: BarChart3, label: 'Статистика', roles: ['owner', 'team_leader', 'admin', 'curator', 'hr', 'hr_huntme', 'scout'] },
@@ -36,7 +36,7 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
     { to: '/notifications', icon: Bell, label: 'Уведомления', roles: ['owner', 'team_leader', 'admin', 'curator', 'hr', 'hr_huntme', 'hr_mason', 'scout'] },
     { to: '/curator-panel', icon: UserCheck, label: 'Панель Куратора', roles: ['owner', 'curator'] },
     { to: '/admin-panel', icon: Shield, label: 'Панель Управления', roles: ['owner', 'team_leader'] },
-    { to: '/profile', icon: User, label: 'Профиль', roles: ['owner', 'team_leader', 'admin', 'curator', 'hr', 'hr_huntme', 'hr_mason', 'scout'] },
+    { to: '/profile', icon: User, label: 'Профиль', roles: ['owner', 'team_leader', 'admin', 'curator', 'hr', 'hr_huntme', 'scout'] },
   ];
 
   const filteredItems = navItems.filter(item => item.roles.some(r => user.roles.includes(r)));
