@@ -362,7 +362,8 @@ function logAction(userId, action, details, ip) {
     db.prepare('INSERT INTO logs (user_id, action, details, ip) VALUES (?, ?, ?, ?)').run(
       userId || null, action, details || '', ip || ''
     );
-  } catch (e) { /* ignore logging errors */ }
+    saveDatabase();
+  } catch (e) { console.error('logAction error:', e.message); }
 }
 
 module.exports = { getDb, initDatabase, saveDatabase, logAction };
