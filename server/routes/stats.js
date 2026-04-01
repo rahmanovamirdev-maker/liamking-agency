@@ -54,13 +54,23 @@ router.get('/general', authMiddleware, (req, res) => {
 router.get('/squads', authMiddleware, (req, res) => {
   const db = getDb();
   try {
+    const { period } = req.query;
+    const periodMap = {
+      day: "datetime('now', '-1 day')",
+      week: "datetime('now', '-7 days')",
+      month: "datetime('now', '-1 month')",
+      year: "datetime('now', '-1 year')",
+    };
+    const dateExpr = periodMap[period];
+    const dateFilter = dateExpr ? `AND a.created_at >= ${dateExpr}` : '';
+
     const stats = db.prepare(`
       SELECT s.id, s.name,
         COUNT(a.id) as total_apps,
         SUM(CASE WHEN a.status = 'registration' THEN 1 ELSE 0 END) as registered,
         SUM(CASE WHEN a.status = 'rejected' THEN 1 ELSE 0 END) as rejected
       FROM squads s
-      LEFT JOIN applications a ON a.squad_id = s.id
+      LEFT JOIN applications a ON a.squad_id = s.id ${dateFilter}
       GROUP BY s.id
       ORDER BY total_apps DESC
     `).all();
@@ -77,8 +87,10 @@ router.get('/top-agents', authMiddleware, (req, res) => {
   try {
     const { period, limit = 20 } = req.query;
     const periodMap = {
+      day: "datetime('now', '-1 day')",
       week: "datetime('now', '-7 days')",
       month: "datetime('now', '-1 month')",
+      year: "datetime('now', '-1 year')",
     };
     const dateExpr = periodMap[period];
     const dateFilter = dateExpr ? `AND a.created_at >= ${dateExpr}` : '';

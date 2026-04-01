@@ -23,7 +23,7 @@ export default function Statistics() {
     try {
       const [gen, squads, top, pers] = await Promise.all([
         api.get<any>(`/stats/general?period=${period}`),
-        api.get<any[]>('/stats/squads'),
+        api.get<any[]>(`/stats/squads?period=${period}`),
         api.get<any[]>(`/stats/top-agents?period=${period}`),
         api.get<any>('/stats/personal/me'),
       ]);
