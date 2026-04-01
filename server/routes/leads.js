@@ -1,5 +1,5 @@
 const express = require('express');
-const { getDb, saveDatabase } = require('../database');
+const { getDb, saveDatabase, logAction } = require('../database');
 const { authMiddleware, roleMiddleware, userHasRole } = require('../middleware/auth');
 
 const router = express.Router();
@@ -144,6 +144,7 @@ router.post('/upload', authMiddleware, roleMiddleware('owner'), (req, res) => {
       imported++;
     }
 
+    logAction(req.user.id, 'leads_import', `Импорт лидов: ${imported} загружено, ${skipped} пропущено`, req.ip);
     saveDatabase();
     res.json({ imported, skipped, message: `Загружено ${imported} лидов` });
   } catch (err) {
@@ -163,6 +164,7 @@ router.post('/', authMiddleware, roleMiddleware('owner'), (req, res) => {
       INSERT INTO leads (name, phone, telegram, source, status)
       VALUES (?, ?, ?, ?, 'new')
     `).run(name, phone || '', telegram || '', source || '');
+    logAction(req.user.id, 'lead_create', `Добавлен лид: ${name}`, req.ip);
     saveDatabase();
     res.status(201).json({ id: result.lastInsertRowid, message: 'Лид добавлен' });
   } catch (err) {
@@ -206,11 +208,13 @@ router.put('/:id', authMiddleware, (req, res) => {
         UPDATE leads SET touch_count = ?, status = 'new', scout_id = NULL, assigned_at = NULL WHERE id = ?
       `).run(newTouchCount, lead.id);
 
+      logAction(req.user.id, 'lead_touch', `Касание ${newTouchCount} по лиду #${lead.id}: ${status}`, req.ip);
       saveDatabase();
       return res.json({ message: `Касание ${newTouchCount} записано, лид возвращён в пул` });
     }
 
     db.prepare('UPDATE leads SET status = ?, assigned_at = CURRENT_TIMESTAMP WHERE id = ?').run(status, req.params.id);
+    logAction(req.user.id, 'lead_status', `Лид #${req.params.id}: статус → ${status}`, req.ip);
     saveDatabase();
     res.json({ message: 'Статус обновлён' });
   } catch (err) {
@@ -297,6 +301,7 @@ router.post('/requests', authMiddleware, (req, res) => {
       VALUES (?, 'lead_request', 'Запрос лидов', ?)
     `).run(scout.admin_id, `Скаут ${req.user.full_name} запросил лиды`);
 
+    logAction(req.user.id, 'lead_request', `Запрос лидов от ${req.user.full_name}`, req.ip);
     saveDatabase();
     res.status(201).json({ id: result.lastInsertRowid, message: 'Заявка создана' });
   } catch (err) {
@@ -337,6 +342,7 @@ router.put('/requests/:id', authMiddleware, (req, res) => {
         VALUES (?, 'lead_request', 'Заявка отклонена', ?)
       `).run(request.scout_id, `Ваша заявка на лиды была отклонена${comment ? ': ' + comment : ''}`);
 
+      logAction(req.user.id, 'lead_reject', `Заявка #${req.params.id} отклонена`, req.ip);
       saveDatabase();
       return res.json({ message: 'Заявка отклонена' });
     }
@@ -376,6 +382,7 @@ router.put('/requests/:id', authMiddleware, (req, res) => {
       VALUES (?, 'lead_request', 'Лиды выданы', ?)
     `).run(request.scout_id, `Вам выдано ${actualCount} лидов`);
 
+    logAction(req.user.id, 'lead_approve', `Выдано ${actualCount} лидов скауту (заявка #${req.params.id})`, req.ip);
     saveDatabase();
     res.json({ message: `Выдано ${actualCount} лидов`, assigned: actualCount });
   } catch (err) {

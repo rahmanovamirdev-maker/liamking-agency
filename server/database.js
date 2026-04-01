@@ -356,4 +356,13 @@ async function initDatabase() {
   console.log('Database initialized successfully');
 }
 
-module.exports = { getDb, initDatabase, saveDatabase };
+function logAction(userId, action, details, ip) {
+  try {
+    const db = getDb();
+    db.prepare('INSERT INTO logs (user_id, action, details, ip) VALUES (?, ?, ?, ?)').run(
+      userId || null, action, details || '', ip || ''
+    );
+  } catch (e) { /* ignore logging errors */ }
+}
+
+module.exports = { getDb, initDatabase, saveDatabase, logAction };

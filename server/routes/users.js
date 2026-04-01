@@ -1,6 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
-const { getDb } = require('../database');
+const { getDb, logAction } = require('../database');
 const { authMiddleware, roleMiddleware, userHasRole } = require('../middleware/auth');
 
 const VALID_ROLES = ['owner', 'team_leader', 'admin', 'curator', 'hr', 'hr_huntme', 'hr_mason', 'scout'];
@@ -71,6 +71,7 @@ router.post('/', authMiddleware, roleMiddleware('owner', 'team_leader'), (req, r
     `).run(username, hash, full_name, normalizedRole, squad_id || null, team_id || null);
 
     const { saveDatabase } = require('../database');
+    logAction(req.user.id, 'user_create', `Создан пользователь: ${full_name} (${username}, ${normalizedRole})`, req.ip);
     saveDatabase();
     res.status(201).json({ id: result.lastInsertRowid, message: 'Пользователь создан' });
   } catch (err) {
@@ -134,6 +135,7 @@ router.put('/:id', authMiddleware, (req, res) => {
     values.push(userId);
     db.prepare(`UPDATE users SET ${updates.join(', ')} WHERE id = ?`).run(...values);
     const { saveDatabase } = require('../database');
+    logAction(req.user.id, 'user_update', `Обновлён пользователь #${userId}`, req.ip);
     saveDatabase();
     res.json({ message: 'Пользователь обновлён' });
   } catch (err) {

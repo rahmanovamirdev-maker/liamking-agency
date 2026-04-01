@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { getDb, saveDatabase } = require('../database');
+const { getDb, saveDatabase, logAction } = require('../database');
 const { authMiddleware, JWT_SECRET } = require('../middleware/auth');
 
 const router = express.Router();
@@ -31,6 +31,7 @@ router.post('/login', (req, res) => {
   );
 
   const { password_hash, ...userData } = user;
+  logAction(user.id, 'login', `Вход в систему: ${user.full_name}`, req.ip);
   res.json({ token, user: userData });
 });
 
@@ -68,6 +69,7 @@ router.put('/change-password', authMiddleware, (req, res) => {
 
   const hash = bcrypt.hashSync(newPassword, 10);
   db.prepare('UPDATE users SET password_hash = ? WHERE id = ?').run(hash, req.user.id);
+  logAction(req.user.id, 'password_change', 'Смена пароля', req.ip);
   saveDatabase();
   res.json({ message: 'Пароль изменён' });
 });

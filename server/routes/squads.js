@@ -1,5 +1,5 @@
 const express = require('express');
-const { getDb, saveDatabase } = require('../database');
+const { getDb, saveDatabase, logAction } = require('../database');
 const { authMiddleware, roleMiddleware, userHasRole } = require('../middleware/auth');
 
 const router = express.Router();
@@ -73,6 +73,7 @@ router.post('/', authMiddleware, roleMiddleware('owner', 'team_leader'), (req, r
     if (admin_id) {
       db.prepare('UPDATE users SET squad_id = ? WHERE id = ?').run(result.lastInsertRowid, admin_id);
     }
+    logAction(req.user.id, 'squad_create', `Создан сквад: ${name}`, req.ip);
     res.status(201).json({ id: result.lastInsertRowid, message: 'Сквад создан' });
   } catch (err) {
     console.error(err);
@@ -113,6 +114,7 @@ router.delete('/:id', authMiddleware, roleMiddleware('owner'), (req, res) => {
     db.prepare('DELETE FROM teams WHERE squad_id = ?').run(req.params.id);
     db.prepare('DELETE FROM squads WHERE id = ?').run(req.params.id);
     const { saveDatabase } = require('../database');
+    logAction(req.user.id, 'squad_delete', `Удалён сквад #${req.params.id}`, req.ip);
     saveDatabase();
     res.json({ message: 'Сквад удалён' });
   } catch (err) {
@@ -147,6 +149,7 @@ router.post('/:squadId/teams', authMiddleware, roleMiddleware('owner', 'team_lea
   try {
     const result = db.prepare('INSERT INTO teams (name, squad_id, leader_id) VALUES (?, ?, ?)')
       .run(name, req.params.squadId, leader_id || null);
+    logAction(req.user.id, 'team_create', `Создана команда: ${name}`, req.ip);
     res.status(201).json({ id: result.lastInsertRowid, message: 'Команда создана' });
   } catch (err) {
     console.error(err);
@@ -190,6 +193,7 @@ router.delete('/teams/:teamId', authMiddleware, roleMiddleware('owner'), (req, r
     db.prepare('UPDATE users SET team_id = NULL WHERE team_id = ?').run(req.params.teamId);
     db.prepare('DELETE FROM teams WHERE id = ?').run(req.params.teamId);
     const { saveDatabase } = require('../database');
+    logAction(req.user.id, 'team_delete', `Удалена команда #${req.params.teamId}`, req.ip);
     saveDatabase();
     res.json({ message: 'Команда удалена' });
   } catch (err) {
@@ -210,6 +214,7 @@ router.post('/teams/:teamId/members', authMiddleware, roleMiddleware('owner', 't
 
     db.prepare('UPDATE users SET team_id = ?, squad_id = ? WHERE id = ?').run(req.params.teamId, team.squad_id, user_id);
     const { saveDatabase } = require('../database');
+    logAction(req.user.id, 'team_add_member', `Участник #${user_id} добавлен в команду #${req.params.teamId}`, req.ip);
     saveDatabase();
     res.json({ message: 'Участник добавлен' });
   } catch (err) {
@@ -224,6 +229,7 @@ router.delete('/teams/:teamId/members/:userId', authMiddleware, roleMiddleware('
   try {
     db.prepare('UPDATE users SET team_id = NULL, squad_id = NULL WHERE id = ? AND team_id = ?').run(req.params.userId, req.params.teamId);
     const { saveDatabase } = require('../database');
+    logAction(req.user.id, 'team_remove_member', `Участник #${req.params.userId} удалён из команды #${req.params.teamId}`, req.ip);
     saveDatabase();
     res.json({ message: 'Участник удалён из команды' });
   } catch (err) {

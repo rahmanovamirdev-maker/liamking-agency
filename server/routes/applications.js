@@ -1,5 +1,5 @@
 const express = require('express');
-const { getDb, saveDatabase } = require('../database');
+const { getDb, saveDatabase, logAction } = require('../database');
 const { authMiddleware, roleMiddleware, userHasRole } = require('../middleware/auth');
 
 const router = express.Router();
@@ -289,6 +289,7 @@ router.post('/', authMiddleware, (req, res) => {
       }
     }
 
+    logAction(req.user.id, 'app_create', `Создана анкета #${appId} (${typeLabel}): ${candidate_name}`, req.ip);
     saveDatabase();
     res.status(201).json({ id: appId, message: `Анкета на ${typeLabel} создана` });
   } catch (err) {
@@ -339,6 +340,7 @@ router.put('/:id/direction', authMiddleware, (req, res) => {
       }
     }
 
+    logAction(req.user.id, 'app_direct', `Анкета #${app.id} "${app.candidate_name}" направлена на ${dirLabel}`, req.ip);
     saveDatabase();
     res.json({ message: `Анкета направлена на ${dirLabel}` });
   } catch (err) {
@@ -396,6 +398,7 @@ router.put('/:id/status', authMiddleware, (req, res) => {
     createNotification(db, app.scout_id, 'status_change', 'Статус анкеты изменён',
       `Анкета "${app.candidate_name}" — новый статус`, app.id);
 
+    logAction(req.user.id, 'app_status', `Анкета #${req.params.id} "${app.candidate_name}": ${app.status} → ${status}`, req.ip);
     saveDatabase();
     res.json({ message: 'Статус обновлён' });
   } catch (err) {
@@ -445,6 +448,7 @@ router.put('/:id', authMiddleware, (req, res) => {
 
     values.push(req.params.id);
     db.prepare(`UPDATE applications SET ${updates.join(', ')} WHERE id = ?`).run(...values);
+    logAction(req.user.id, 'app_edit', `Редактирование анкеты #${req.params.id}`, req.ip);
     saveDatabase();
     res.json({ message: 'Анкета обновлена' });
   } catch (err) {
@@ -469,6 +473,7 @@ router.delete('/:id', authMiddleware, (req, res) => {
     db.prepare('DELETE FROM notifications WHERE application_id = ?').run(req.params.id);
     db.prepare('DELETE FROM applications WHERE id = ?').run(req.params.id);
 
+    logAction(req.user.id, 'app_delete', `Удалена анкета #${req.params.id}`, req.ip);
     saveDatabase();
     res.json({ message: 'Анкета удалена' });
   } catch (err) {

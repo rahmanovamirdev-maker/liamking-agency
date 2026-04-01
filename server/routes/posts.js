@@ -1,5 +1,5 @@
 const express = require('express');
-const { getDb, saveDatabase } = require('../database');
+const { getDb, saveDatabase, logAction } = require('../database');
 const { authMiddleware, roleMiddleware } = require('../middleware/auth');
 
 const router = express.Router();
@@ -64,6 +64,7 @@ router.post('/', authMiddleware, roleMiddleware('owner', 'team_leader'), (req, r
       INSERT INTO posts (title, content, author_id, is_pinned)
       VALUES (?, ?, ?, ?)
     `).run(title, content, req.user.id, is_pinned ? 1 : 0);
+    logAction(req.user.id, 'post_create', `Создан пост: ${title}`, req.ip);
     saveDatabase();
     res.status(201).json({ id: result.lastInsertRowid, message: 'Пост создан' });
   } catch (err) {
@@ -97,6 +98,7 @@ router.delete('/:id', authMiddleware, roleMiddleware('owner', 'team_leader'), (r
   const db = getDb();
   try {
     db.prepare('DELETE FROM posts WHERE id = ?').run(req.params.id);
+    logAction(req.user.id, 'post_delete', `Удалён пост #${req.params.id}`, req.ip);
     saveDatabase();
     res.json({ message: 'Пост удалён' });
   } catch (err) {
