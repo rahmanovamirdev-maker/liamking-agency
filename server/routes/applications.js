@@ -18,7 +18,7 @@ const directionStatuses = {
     operator: ['recorded', 'interview_came', 'interview_noshow', 'training', 'rejected', 'interview_ignored'],
   },
   mason: {
-    model: ['ignored', 'interview_came', 'interview_noshow', 'registration', 'rejected'],
+    model: ['ignored', 'interview_came', 'interview_noshow', 'registration', 'active', 'dropped', 'rejected'],
     operator: ['ignored', 'interview_came', 'interview_noshow', 'registration', 'rejected'],
   },
 };

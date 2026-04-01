@@ -16,6 +16,7 @@ const statusColors: Record<string, string> = {
   interview_ignored: 'bg-gray-500/20 text-gray-400',
   registration: 'bg-green-500/20 text-green-400',
   active: 'bg-emerald-600/20 text-emerald-300',
+  dropped: 'bg-rose-500/20 text-rose-400',
   training: 'bg-indigo-500/20 text-indigo-400',
   ignored: 'bg-gray-500/20 text-gray-400',
   rejected: 'bg-red-500/20 text-red-400',
@@ -30,6 +31,7 @@ const statusLabelsGendered: Record<string, { f: string; m: string }> = {
   interview_ignored: { f: 'Игнор собеседования', m: 'Игнор собеседования' },
   registration: { f: 'Регистрация', m: 'Регистрация' },
   active: { f: 'Активна', m: 'Активен' },
+  dropped: { f: 'Слилась', m: 'Слился' },
   training: { f: 'На обучении', m: 'На обучении' },
   ignored: { f: 'Игнор', m: 'Игнор' },
   rejected: { f: 'Отказ', m: 'Отказ' },
@@ -53,7 +55,7 @@ const directionStatusMap: Record<string, Record<string, string[]>> = {
     operator: ['recorded', 'interview_came', 'interview_noshow', 'training', 'rejected', 'interview_ignored'],
   },
   mason: {
-    model: ['ignored', 'interview_came', 'interview_noshow', 'registration', 'rejected'],
+    model: ['ignored', 'interview_came', 'interview_noshow', 'registration', 'active', 'dropped', 'rejected'],
     operator: ['ignored', 'interview_came', 'interview_noshow', 'registration', 'rejected'],
   },
 };
