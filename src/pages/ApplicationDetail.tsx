@@ -125,7 +125,7 @@ export default function ApplicationDetail() {
     return [];
   })();
 
-  const canDirectApp = hasRole(user, 'owner', 'team_leader') && app.status === 'pending_review';
+  const canDirectApp = (hasRole(user, 'owner') || (hasRole(user, 'team_leader') && app.status === 'pending_review'));
   const canRejectPending = hasRole(user, 'owner', 'team_leader') && app.status === 'pending_review';
   const canChangeStatus = availableStatuses.length > 0 && app.status !== 'pending_review';
 
@@ -247,7 +247,7 @@ export default function ApplicationDetail() {
           {canDirectApp && (
             <div className="card">
               <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                <Send size={18} /> Направить на партнёра
+                <Send size={18} /> {app.direction ? 'Перенаправить на партнёра' : 'Направить на партнёра'}
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <button onClick={() => directToPartner('huntme')}

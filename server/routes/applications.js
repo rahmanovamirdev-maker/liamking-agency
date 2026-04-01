@@ -312,7 +312,7 @@ router.put('/:id/direction', authMiddleware, (req, res) => {
   try {
     const app = db.prepare('SELECT * FROM applications WHERE id = ?').get(req.params.id);
     if (!app) return res.status(404).json({ error: 'Анкета не найдена' });
-    if (app.status !== 'pending_review') {
+    if (!userHasRole(req.user, 'owner') && app.status !== 'pending_review') {
       return res.status(400).json({ error: 'Анкету можно направить только со статуса "На рассмотрении"' });
     }
 
